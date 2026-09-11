@@ -3,7 +3,7 @@ workflows:
     name: Android Workflow
     instance_type: mac_mini_m1
     environment:
-      java: 11
+      java: 17
     triggering:
       events:
         - push
