@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cream_light">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -12,19 +11,16 @@
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:orientation="horizontal">
-
         <View
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/ic_launcher" />
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="12dp"
             android:orientation="vertical">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,7 +28,6 @@
                 android:textSize="24sp"
                 android:textColor="@color/gold"
                 android:textStyle="bold" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,18 +35,14 @@
                 android:textSize="12sp"
                 android:textColor="@color/cream_light"
                 android:layout_marginTop="4dp" />
-
         </LinearLayout>
-
         <ImageButton
             android:id="@+id/ic_cart"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ic_cart"
             android:contentDescription="Cart" />
-
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,7 +51,6 @@
         android:orientation="vertical"
         android:padding="16dp"
         android:layout_margin="12dp">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +58,6 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/header_green" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,16 +65,13 @@
             android:textSize="12sp"
             android:textColor="@color/header_green"
             android:layout_marginTop="4dp" />
-
     </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dishes_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="8dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -93,7 +79,6 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp">
-
         <ImageButton
             android:id="@+id/ic_home"
             android:layout_width="48dp"
@@ -101,7 +86,6 @@
             android:background="@drawable/ic_home"
             android:contentDescription="Home"
             android:layout_margin="6dp" />
-
         <ImageButton
             android:id="@+id/ic_search"
             android:layout_width="48dp"
@@ -109,7 +93,6 @@
             android:background="@drawable/ic_search"
             android:contentDescription="Search"
             android:layout_margin="6dp" />
-
         <ImageButton
             android:id="@+id/ic_cart_nav"
             android:layout_width="48dp"
@@ -117,7 +100,6 @@
             android:background="@drawable/ic_cart"
             android:contentDescription="Cart"
             android:layout_margin="6dp" />
-
         <ImageButton
             android:id="@+id/ic_orders"
             android:layout_width="48dp"
@@ -125,7 +107,6 @@
             android:background="@drawable/ic_restaurant"
             android:contentDescription="Music"
             android:layout_margin="6dp" />
-
         <ImageButton
             android:id="@+id/ic_person"
             android:layout_width="48dp"
@@ -133,31 +114,5 @@
             android:background="@drawable/ic_person"
             android:contentDescription="Account"
             android:layout_margin="6dp" />
-
     </LinearLayout>
-
-</LinearLayout>            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_home"
-            android:contentDescription="Home"
-            android:layout_margin="8dp" />
-
-        <ImageButton
-            android:id="@+id/ic_restaurant"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_restaurant"
-            android:contentDescription="Restaurant"
-            android:layout_margin="8dp" />
-
-        <ImageButton
-            android:id="@+id/ic_person"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_person"
-            android:contentDescription="Account"
-            android:layout_margin="8dp" />
-
-    </LinearLayout>
-
 </LinearLayout>
