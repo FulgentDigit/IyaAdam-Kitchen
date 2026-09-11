@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cream_light">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/header_green"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Account"
+            android:textSize="24sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Profile -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:gravity="center">
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/ic_person" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="John Doe"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="john@example.com"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account Settings"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/header_green"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="12dp"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Edit Profile"
+                    android:textSize="14sp"
+                    android:background="@color/gold"
+                    android:textColor="@color/header_green" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Saved Addresses"
+                    android:textSize="14sp"
+                    android:background="@color/gold"
+                    android:textColor="@color/header_green"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Order History"
+                    android:textSize="14sp"
+                    android:background="@color/gold"
+                    android:textColor="@color/header_green"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Logout"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@color/alert_red"
+        android:textColor="@color/white"
+        android:layout_margin="16dp" />
+
+</LinearLayout>
