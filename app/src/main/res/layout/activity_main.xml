@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cream_light">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/header_green"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textSize="24sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
+
+        <ImageButton
+            android:id="@+id/ic_cart"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_cart"
+            android:contentDescription="Cart" />
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Featured Dishes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/header_green" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Jollof Rice Special\n• Grilled Chicken\n• Goat Meat Pepper Sauce\n• Suya Beef\n• Moi Moi\n• Pepper Soup\n• Pounded Yam with Egusi\n• Tuwo de Rice"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:padding="12dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Good Food Brings People Together"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/gold"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="@color/header_green" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Footer Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/header_green"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <ImageButton
+            android:id="@+id/ic_home"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_home"
+            android:contentDescription="Home"
+            android:layout_margin="8dp" />
+
+        <ImageButton
+            android:id="@+id/ic_restaurant"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_restaurant"
+            android:contentDescription="Restaurant"
+            android:layout_margin="8dp" />
+
+        <ImageButton
+            android:id="@+id/ic_person"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_person"
+            android:contentDescription="Account"
+            android:layout_margin="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
