@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@color/white"
+    android:layout_margin="4dp">
+    <ImageView
+        android:id="@+id/dish_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@color/cream_dark"
+        android:scaleType="centerCrop"
+        android:contentDescription="Dish" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/dish_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dish Name"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/header_green" />
+        <TextView
+            android:id="@+id/dish_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₦2,500"
+            android:textSize="12sp"
+            android:textColor="@color/alert_red"
+            android:layout_marginTop="4dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+            <Button
+                android:id="@+id/btn_decrease"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="-"
+                android:textSize="12sp"
+                android:background="@color/gold" />
+            <TextView
+                android:id="@+id/quantity"
+                android:layout_width="32dp"
+                android:layout_height="28dp"
+                android:text="1"
+                android:textAlignment="center"
+                android:gravity="center_vertical"
+                android:background="@color/cream_light" />
+            <Button
+                android:id="@+id/btn_increase"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="+"
+                android:textSize="12sp"
+                android:background="@color/gold" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingEnd="8dp">
+        <TextView
+            android:id="@+id/subtotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₦2,500"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/header_green" />
+        <Button
+            android:id="@+id/btn_remove"
+            android:layout_width="60dp"
+            android:layout_height="32dp"
+            android:text="Remove"
+            android:textSize="10sp"
+            android:background="@color/alert_red"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+</LinearLayout>
