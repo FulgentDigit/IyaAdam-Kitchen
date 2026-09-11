@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cream_light">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/header_green"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp">
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_back"
+            android:contentDescription="Back" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="How to Order"
+            android:textSize="20sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 1: Browse Menu"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Explore our delicious selection of traditional Nigerian dishes and modern fusion meals. Each item is carefully prepared with fresh ingredients."
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 2: Add to Cart"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Simply tap the '+Add' button on any dish to add it to your cart. Adjust quantities as needed, and continue shopping for more items."
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 3: Review Your Order"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Go to your cart, review all items, quantities, and the total price. You can modify quantities or remove items before checkout."
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 4: Checkout"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Click 'Proceed to Checkout'. Enter your delivery address, payment method, and complete your order securely with Flutterwave."
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Step 5: Track Delivery"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="After payment, you'll receive an order confirmation. Track your delivery in real-time and get notifications when your food is on the way."
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/gold"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏪 About IyaAdam Kitchen"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="For Delicious Food Experience: Visit IyaAdam Kitchen @ Awokoya, Ijebu Ode. We deliver authentic Nigerian cuisine with premium ingredients, prepared fresh daily for your satisfaction."
+                    android:textSize="13sp"
+                    android:textColor="@color/header_green"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
