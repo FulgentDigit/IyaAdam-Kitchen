@@ -44,22 +44,15 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
         holder.prepTime.setText(dish.prepTime + " mins");
         holder.rating.setText(String.format("%.1f ⭐ (%d)", dish.rating, dish.reviewCount));
         
-        // Load image from URL
-        loadImageFromUrl(holder.dishImage, dish.imageUrl);
-        
-        // Click on card to see details
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDishClick(dish);
             }
         });
         
-        // Add to cart button
         holder.addToCartBtn.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onAddToCart(dish);
-            }
-            Toast.makeText(context, "Added " + dish.name + " to cart!", Toast.LENGTH_SHORT).show();
+            CartManager.getInstance().addToCart(dish);
+            Toast.makeText(context, "✓ " + dish.name + " added to cart!", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -69,10 +62,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
     }
 
     private void loadImageFromUrl(ImageView imageView, String url) {
-        // For now, use placeholder colors. When you add Glide library, use:
-        // Glide.with(context).load(url).placeholder(R.drawable.bg_image_rounded).into(imageView);
-        
-        imageView.setBackgroundColor(0xFF9E8B7E); // Placeholder tan color
+        imageView.setBackgroundColor(0xFF9E8B7E);
     }
 
     public static class DishViewHolder extends RecyclerView.ViewHolder {
