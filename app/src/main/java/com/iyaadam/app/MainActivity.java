@@ -15,28 +15,26 @@ public class MainActivity extends AppCompatActivity implements DishAdapter.OnDis
     private RecyclerView dishesRecycler;
     private DishAdapter adapter;
     private List<Dish> dishes;
+    private ImageButton cartButton, accountButton, searchButton, musicButton, howToOrderButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setup RecyclerView
         dishesRecycler = findViewById(R.id.dishes_recycler);
         dishesRecycler.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // Create sample dishes
         dishes = createSampleDishes();
 
-        // Setup adapter
         adapter = new DishAdapter(this, dishes, this);
         dishesRecycler.setAdapter(adapter);
 
-        // Navigation buttons
-        ImageButton cartButton = findViewById(R.id.ic_cart);
-        ImageButton accountButton = findViewById(R.id.ic_person);
-        ImageButton searchButton = findViewById(R.id.ic_search);
-        ImageButton musicButton = findViewById(R.id.ic_orders);  // Music button in bottom nav
+        cartButton = findViewById(R.id.ic_cart);
+        accountButton = findViewById(R.id.ic_person);
+        searchButton = findViewById(R.id.ic_search);
+        musicButton = findViewById(R.id.ic_orders);
+        howToOrderButton = findViewById(R.id.ic_home);
 
         cartButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CartActivity.class);
@@ -52,9 +50,13 @@ public class MainActivity extends AppCompatActivity implements DishAdapter.OnDis
             Toast.makeText(MainActivity.this, "Search feature coming soon!", Toast.LENGTH_SHORT).show();
         });
 
-        // Music Player Button
         musicButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, MusicPlayerActivity.class);
+            startActivity(intent);
+        });
+
+        howToOrderButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HowToOrderActivity.class);
             startActivity(intent);
         });
     }
@@ -92,12 +94,10 @@ public class MainActivity extends AppCompatActivity implements DishAdapter.OnDis
     @Override
     public void onDishClick(Dish dish) {
         Toast.makeText(this, "Viewing: " + dish.name, Toast.LENGTH_SHORT).show();
-        // TODO: Open dish detail screen
     }
 
     @Override
     public void onAddToCart(Dish dish) {
-        // TODO: Add to cart logic
-        Toast.makeText(this, dish.name + " added to cart!", Toast.LENGTH_SHORT).show();
+        CartManager.getInstance().addToCart(dish);
     }
 }
