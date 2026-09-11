@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IyaAdam Kitchen</string>
+    <string name="header_text">For Delicious Food Experience: Visit IyaAdam Kitchen @ Awokoya, Ijebu Ode</string>
+    <string name="app_tagline">Premium Nigerian Cuisine - Fresh & Delicious</string>
 </resources>
