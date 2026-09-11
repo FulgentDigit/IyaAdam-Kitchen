@@ -44,6 +44,8 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
         holder.prepTime.setText(dish.prepTime + " mins");
         holder.rating.setText(String.format("%.1f ⭐ (%d)", dish.rating, dish.reviewCount));
         
+        loadImageFromDrawable(holder.dishImage, dish.imageUrl);
+        
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDishClick(dish);
@@ -61,8 +63,17 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
         return dishes.size();
     }
 
-    private void loadImageFromUrl(ImageView imageView, String url) {
-        imageView.setBackgroundColor(0xFF9E8B7E);
+    private void loadImageFromDrawable(ImageView imageView, String resourceName) {
+        try {
+            int resId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
+            if (resId != 0) {
+                imageView.setImageResource(resId);
+            } else {
+                imageView.setBackgroundColor(0xFF9E8B7E);
+            }
+        } catch (Exception e) {
+            imageView.setBackgroundColor(0xFF9E8B7E);
+        }
     }
 
     public static class DishViewHolder extends RecyclerView.ViewHolder {
