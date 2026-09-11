@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements DishAdapter.OnDis
         adapter = new DishAdapter(this, dishes, this);
         dishesRecycler.setAdapter(adapter);
 
-        cartButton = findViewById(R.id.ic_cart);
+        cartButton = findViewById(R.id.ic_cart_nav);
         accountButton = findViewById(R.id.ic_person);
         searchButton = findViewById(R.id.ic_search);
         musicButton = findViewById(R.id.ic_orders);
