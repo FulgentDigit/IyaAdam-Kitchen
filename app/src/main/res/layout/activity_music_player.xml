@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cream_light">
-
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -13,14 +11,12 @@
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
         android:orientation="horizontal">
-
         <ImageButton
             android:id="@+id/btn_close"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_back"
             android:contentDescription="Close" />
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,14 +26,10 @@
             android:textColor="@color/gold"
             android:textStyle="bold"
             android:textAlignment="center" />
-
         <View
             android:layout_width="40dp"
             android:layout_height="40dp" />
-
     </LinearLayout>
-
-    <!-- Now Playing Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -45,8 +37,6 @@
         android:gravity="center"
         android:background="@color/header_green"
         android:padding="16dp">
-
-        <!-- Album Art -->
         <ImageView
             android:id="@+id/album_art"
             android:layout_width="200dp"
@@ -54,8 +44,6 @@
             android:background="@color/gold"
             android:contentDescription="Album art"
             android:scaleType="centerCrop" />
-
-        <!-- Track Info -->
         <TextView
             android:id="@+id/track_title"
             android:layout_width="wrap_content"
@@ -65,7 +53,6 @@
             android:textStyle="bold"
             android:textColor="@color/gold"
             android:layout_marginTop="20dp" />
-
         <TextView
             android:id="@+id/track_artist"
             android:layout_width="wrap_content"
@@ -74,39 +61,30 @@
             android:textSize="14sp"
             android:textColor="@color/cream_light"
             android:layout_marginTop="4dp" />
-
     </LinearLayout>
-
-    <!-- Progress Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
         android:background="@color/white">
-
-        <!-- SeekBar -->
         <SeekBar
             android:id="@+id/seek_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp" />
-
-        <!-- Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="space_between">
-
+            android:orientation="horizontal">
             <TextView
                 android:id="@+id/current_time"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="00:00"
                 android:textSize="12sp"
                 android:textColor="@color/black" />
-
             <TextView
                 android:id="@+id/total_time"
                 android:layout_width="wrap_content"
@@ -114,12 +92,8 @@
                 android:text="03:33"
                 android:textSize="12sp"
                 android:textColor="@color/black" />
-
         </LinearLayout>
-
     </LinearLayout>
-
-    <!-- Controls -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,7 +101,6 @@
         android:gravity="center"
         android:padding="20dp"
         android:background="@color/white">
-
         <ImageButton
             android:id="@+id/btn_prev"
             android:layout_width="56dp"
@@ -135,7 +108,6 @@
             android:background="@drawable/ic_back"
             android:contentDescription="Previous"
             android:layout_margin="8dp" />
-
         <ImageButton
             android:id="@+id/btn_play_pause"
             android:layout_width="64dp"
@@ -143,7 +115,6 @@
             android:background="@color/gold"
             android:contentDescription="Play"
             android:layout_margin="16dp" />
-
         <ImageButton
             android:id="@+id/btn_next"
             android:layout_width="56dp"
@@ -151,10 +122,7 @@
             android:background="@drawable/ic_back"
             android:contentDescription="Next"
             android:layout_margin="8dp" />
-
     </LinearLayout>
-
-    <!-- Playlist -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -164,11 +132,9 @@
         android:textColor="@color/header_green"
         android:padding="16dp"
         android:background="@color/cream_light" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playlist_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
 </LinearLayout>
