@@ -4,155 +4,157 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cream_light">
-
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="56dp"
         android:background="@color/header_green"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp">
-
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Checkout"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textColor="@color/gold"
             android:textStyle="bold" />
-
     </LinearLayout>
-
-    <!-- Form -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delivery Address"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/header_green" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Full Name"
-                android:inputType="text"
-                android:padding="12dp"
-                android:background="@color/white"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Street Address"
-                android:inputType="text"
-                android:padding="12dp"
-                android:background="@color/white"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="City/Area"
-                android:inputType="text"
-                android:padding="12dp"
-                android:background="@color/white"
-                android:layout_marginTop="8dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Phone Number"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:background="@color/white"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payment Method"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/header_green"
-                android:layout_marginTop="16dp" />
-
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bank Transfer" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Card Payment"
-                    android:layout_marginTop="8dp" />
-
-            </RadioGroup>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/white"
-                android:padding="12dp"
-                android:layout_marginTop="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Order Total:"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₦8,500"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/alert_red" />
-
-                </LinearLayout>
-
+                    android:text="Order Summary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:id="@+id/items_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Items: 0"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+                <TextView
+                    android:id="@+id/total_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total: ₦0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/alert_red"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delivery Information"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <EditText
+                    android:id="@+id/input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Full Name"
+                    android:inputType="text"
+                    android:padding="12dp"
+                    android:background="@color/cream_light"
+                    android:layout_marginTop="12dp" />
+                <EditText
+                    android:id="@+id/input_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+                    android:padding="12dp"
+                    android:background="@color/cream_light"
+                    android:layout_marginTop="12dp" />
+                <EditText
+                    android:id="@+id/input_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:hint="Delivery Address"
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:background="@color/cream_light"
+                    android:layout_marginTop="12dp"
+                    android:gravity="top" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍 Your location will be recorded for delivery tracking and security purposes."
+                    android:textSize="12sp"
+                    android:textColor="@color/header_green"
+                    android:layout_marginTop="12dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Method"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💳 Card | 🏦 Bank Transfer | 📱 USSD"
+                    android:textSize="13sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="12dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Secure payment powered by Flutterwave"
+                    android:textSize="11sp"
+                    android:textColor="@color/gold"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-
-    <!-- Place Order Button -->
-    <Button
-        android:id="@+id/btn_place_order"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Place Order"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:background="@color/gold"
-        android:textColor="@color/header_green"
-        android:layout_margin="16dp" />
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/white">
+        <Button
+            android:id="@+id/btn_pay_now"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Pay Now with Flutterwave"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@color/gold"
+            android:textColor="@color/header_green" />
+    </LinearLayout>
 </LinearLayout>
