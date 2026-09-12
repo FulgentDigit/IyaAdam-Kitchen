@@ -1,44 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#06452F">
+    android:background="#002D21">
 
-    <!-- HEADER -->
+    <!-- PREMIUM HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:background="@color/header_green"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
         android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/back_btn"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="7dp"
             android:src="@drawable/ic_back"
-            android:contentDescription="Back" />
+            android:contentDescription="Back"
+            android:background="?android:attr/selectableItemBackgroundBorderless" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🍴  IyaAdam"
+                android:textColor="#FFFFFF"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FULL MENU"
+                android:textColor="@color/gold"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.18" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- RED ACCENT -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/alert_red" />
+
+    <!-- CUSTOM ORDER CARD -->
+    <LinearLayout
+        android:id="@+id/custom_order_btn"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="15dp"
+        android:background="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:text="🎤"
+            android:textSize="28sp"
+            android:background="#FFF3D6" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="13dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Can't find what you want?"
+                android:textColor="#002D21"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Make a custom request • Type or send a voice note"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                android:layout_marginTop="3dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="›"
+            android:textColor="#C62828"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- SECTION TITLE -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="🍴 Full Menu"
-            android:textSize="20sp"
+            android:text="OUR MENU"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="@color/gold"
-            android:layout_marginStart="16dp" />
-    </LinearLayout>
+            android:letterSpacing="0.08" />
 
-    <View android:layout_width="match_parent" android:layout_height="3dp" android:background="@color/alert_red" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fresh • Tasty • Local"
+            android:textColor="@color/gold"
+            android:textSize="11sp" />
+
+    </LinearLayout>
 
     <!-- MENU LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/menu_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="8dp"
-        android:background="#06452F" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="12dp"
+        android:background="#002D21" />
 
 </LinearLayout>
