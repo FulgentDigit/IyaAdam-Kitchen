@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Required for Custom Order voice notes -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
@@ -54,6 +57,13 @@
             android:name=".ProfileActivity"
             android:exported="false" />
 
+        <!-- Custom order + voice note screen -->
+        <activity
+            android:name=".CustomOrderActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
+
+After replacing it, don't build yet. We should first make sure "CustomOrderActivity.java" and "activity_custom_order.xml" are in the correct folders, then I'll take you to the next step.
