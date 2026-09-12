@@ -1,4 +1,4 @@
-package com.iyaadam.app;
+    package com.iyaadam.app;
 
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -25,7 +25,17 @@ public class MenuActivity extends AppCompatActivity {
         menuRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         List<Dish> allDishes = createAllDishes();
-        adapter = new DishAdapter(this, allDishes, dish -> CartManager.getInstance().addToCart(dish));
+        adapter = new DishAdapter(this, allDishes, new DishAdapter.OnDishClickListener() {
+            @Override
+            public void onDishClick(Dish dish) {
+                CartManager.getInstance().addToCart(dish);
+            }
+
+            @Override
+            public void onAddToCart(Dish dish) {
+                CartManager.getInstance().addToCart(dish);
+            }
+        });
         menuRecycler.setAdapter(adapter);
     }
 
@@ -43,4 +53,4 @@ public class MenuActivity extends AppCompatActivity {
         dishes.add(new Dish("10", "Egusi Soup", 2200, "Melon seed delicacy", "egusi_soup", 4.5, 108, 18, true));
         return dishes;
     }
-}
+}    
