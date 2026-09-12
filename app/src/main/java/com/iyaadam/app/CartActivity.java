@@ -2,6 +2,7 @@ package com.iyaadam.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +13,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
 
     private RecyclerView cartRecycler;
     private CartAdapter adapter;
-    private TextView totalPriceTV, itemCountTV;
-    private Button checkoutBtn, continueShoppingBtn;
+    private TextView totalPriceTV, emptyMsg;
+    private Button checkoutBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
 
         cartRecycler = findViewById(R.id.cart_recycler);
         totalPriceTV = findViewById(R.id.total_price);
-        itemCountTV = findViewById(R.id.item_count);
-        checkoutBtn = findViewById(R.id.btn_checkout);
-        continueShoppingBtn = findViewById(R.id.btn_continue_shopping);
+        emptyMsg = findViewById(R.id.empty_msg);
+        checkoutBtn = findViewById(R.id.checkout_btn);
 
         cartRecycler.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CartAdapter(this, CartManager.getInstance().getCartItems(), this);
@@ -36,10 +36,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
             Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
             startActivity(intent);
         });
-
-        continueShoppingBtn.setOnClickListener(v -> {
-            finish();
-        });
     }
 
     @Override
@@ -50,14 +46,18 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
     private void updateUI() {
         int itemCount = CartManager.getInstance().getItemCount();
         int totalPrice = CartManager.getInstance().getTotalPrice();
-        
-        itemCountTV.setText("Items: " + itemCount);
-        totalPriceTV.setText("Total: ₦" + totalPrice);
-        
+
+        totalPriceTV.setText("₦" + totalPrice);
+
         if (itemCount == 0) {
             checkoutBtn.setEnabled(false);
+            emptyMsg.setVisibility(View.VISIBLE);
+            emptyMsg.setText("Your cart is empty");
+            cartRecycler.setVisibility(View.GONE);
         } else {
             checkoutBtn.setEnabled(true);
+            emptyMsg.setVisibility(View.GONE);
+            cartRecycler.setVisibility(View.VISIBLE);
         }
     }
 }
