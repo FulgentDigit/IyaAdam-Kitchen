@@ -3,7 +3,7 @@ package com.iyaadam.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,8 +23,7 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         ImageView backBtn = findViewById(R.id.back_btn);
-        TextView customOrderBtn = findViewById(R.id.custom_order_btn);
-
+        LinearLayout customOrderBtn = findViewById(R.id.custom_order_btn);
         menuRecycler = findViewById(R.id.menu_recycler);
 
         backBtn.setOnClickListener(v -> finish());
