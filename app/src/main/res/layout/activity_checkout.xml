@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,20 +8,22 @@
     android:padding="16dp">
 
     <!-- HEADER -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/header_green"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/back_btn"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/ic_back"
             android:contentDescription="Back" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,100 +33,209 @@
             android:textStyle="bold"
             android:textColor="@color/gold"
             android:layout_marginStart="16dp" />
+
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- DELIVERY INFO -->
+            <!-- DELIVERY -->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="📦 Delivery Information"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:textColor="@color/gold"
-                android:layout_marginBottom="12dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="12dp" />
 
             <EditText
                 android:id="@+id/name_input"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:hint="Full Name"
-                android:textColorHint="@color/cream_light"
                 android:textColor="@color/white"
+                android:textColorHint="@color/cream_light"
                 android:background="@drawable/input_bg"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="14dp"
                 android:layout_marginBottom="12dp" />
 
             <EditText
                 android:id="@+id/phone_input"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:hint="Phone Number"
-                android:textColorHint="@color/cream_light"
-                android:textColor="@color/white"
-                android:background="@drawable/input_bg"
                 android:inputType="phone"
-                android:paddingHorizontal="12dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/cream_light"
+                android:background="@drawable/input_bg"
+                android:paddingHorizontal="14dp"
                 android:layout_marginBottom="12dp" />
 
             <EditText
                 android:id="@+id/address_input"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="90dp"
                 android:hint="Delivery Address"
-                android:textColorHint="@color/cream_light"
-                android:textColor="@color/white"
-                android:background="@drawable/input_bg"
-                android:padding="12dp"
                 android:gravity="top"
-                android:layout_marginBottom="16dp" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/cream_light"
+                android:background="@drawable/input_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="18dp" />
 
-            <!-- PAYMENT METHOD -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="💰 Payment Method"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/gold"
-                android:layout_marginBottom="12dp" />
+            <!-- TOTAL -->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:background="@drawable/card_gold_border"
-                android:gravity="center"
-                android:layout_marginBottom="16dp">
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="18dp">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="💳 Debit/Credit Card"
-                    android:textSize="14sp"
+                    android:layout_weight="1"
+                    android:text="Order Total"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/header_green" />
+
+                <TextView
+                    android:id="@+id/total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₦0"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green" />
+
             </LinearLayout>
 
+            <!-- PAYMENT -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🏦 Bank Transfer"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/gold"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_gold_border"
+                android:padding="18dp">
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bank"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/bank_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Account Name"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textColor="@color/header_green"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Account Number"
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/account_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textStyle="bold"
+                    android:textColor="@color/header_green"
+                    android:textSize="21sp"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/payment_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/header_green"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="After making the transfer, tap the button below to submit your order."
+                android:textColor="@color/cream_light"
+                android:textSize="13sp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="20dp" />
+
         </LinearLayout>
+
     </ScrollView>
 
-    <!-- PAY BUTTON -->
+    <!-- SUBMIT -->
+
     <Button
         android:id="@+id/pay_btn"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="Complete Payment ✓"
-        android:background="@color/gold"
-        android:textColor="@color/header_green"
+        android:layout_height="52dp"
+        android:text="I've Made the Transfer ✓"
+        android:textSize="15sp"
         android:textStyle="bold"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/header_green"
+        android:background="@color/gold"
+        android:layout_marginTop="12dp" />
 
 </LinearLayout>
