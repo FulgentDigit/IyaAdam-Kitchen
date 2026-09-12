@@ -1,41 +1,45 @@
 package com.iyaadam.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    private EditText nameInput, phoneInput, addressInput;
-    private TextView totalPrice, bankName, accountName, accountNumber, paymentNote;
+    private static final String API_URL =
+            "https://iyaadam.uhd.com.ng/api/create_order.php";
+
+    private EditText nameInput;
+    private EditText phoneInput;
+    private EditText addressInput;
     private Button payBtn;
     private ImageView backBtn;
-    private ProgressBar progressBar;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService executor =
+            Executors.newSingleThreadExecutor();
 
-    private static final String BANK_API =
-            "https://www.uhd.com.ng/iyaaadam_api/bank_details.php";
+    private final Handler mainHandler =
+            new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,102 +50,11 @@ public class CheckoutActivity extends AppCompatActivity {
         nameInput = findViewById(R.id.name_input);
         phoneInput = findViewById(R.id.phone_input);
         addressInput = findViewById(R.id.address_input);
-
-        totalPrice = findViewById(R.id.total_price);
-        bankName = findViewById(R.id.bank_name);
-        accountName = findViewById(R.id.account_name);
-        accountNumber = findViewById(R.id.account_number);
-        paymentNote = findViewById(R.id.payment_note);
-
         payBtn = findViewById(R.id.pay_btn);
-        progressBar = findViewById(R.id.progress_bar);
 
         backBtn.setOnClickListener(v -> finish());
 
-        int total = CartManager.getInstance().getTotalPrice();
-        totalPrice.setText("₦" + total);
-
-        loadBankDetails();
-
         payBtn.setOnClickListener(v -> submitOrder());
-    }
-
-    private void loadBankDetails() {
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        executor.execute(() -> {
-            try {
-                URL url = new URL(BANK_API);
-                HttpURLConnection connection =
-                        (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(15000);
-                connection.setReadTimeout(15000);
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream())
-                );
-
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-
-                reader.close();
-                connection.disconnect();
-
-                JSONObject json = new JSONObject(response.toString());
-
-                mainHandler.post(() -> {
-
-                    progressBar.setVisibility(View.GONE);
-
-                    if (json.optBoolean("success")) {
-
-                        bankName.setText(json.optString(
-                                "bank_name",
-                                "Bank details unavailable"
-                        ));
-
-                        accountName.setText(json.optString(
-                                "account_name",
-                                "Bank details unavailable"
-                        ));
-
-                        accountNumber.setText(json.optString(
-                                "account_number",
-                                "Bank details unavailable"
-                        ));
-
-                        paymentNote.setText(json.optString(
-                                "payment_note",
-                                ""
-                        ));
-
-                    } else {
-                        showBankError();
-                    }
-                });
-
-            } catch (Exception e) {
-
-                mainHandler.post(() -> {
-                    progressBar.setVisibility(View.GONE);
-                    showBankError();
-                });
-            }
-        });
-    }
-
-    private void showBankError() {
-        bankName.setText("Unable to load bank details");
-        accountName.setText("Please try again");
-        accountNumber.setText("Check your internet connection");
-        paymentNote.setText("");
     }
 
     private void submitOrder() {
@@ -163,12 +76,15 @@ public class CheckoutActivity extends AppCompatActivity {
         }
 
         if (address.isEmpty()) {
-            addressInput.setError("Enter your delivery address");
+            addressInput.setError("Enter delivery address");
             addressInput.requestFocus();
             return;
         }
 
-        if (CartManager.getInstance().getItemCount() == 0) {
+        List<CartManager.CartItem> cartItems =
+                CartManager.getInstance().getCartItems();
+
+        if (cartItems == null || cartItems.isEmpty()) {
             Toast.makeText(
                     this,
                     "Your cart is empty",
@@ -177,48 +93,187 @@ public class CheckoutActivity extends AppCompatActivity {
             return;
         }
 
-        String orderNumber =
-                "IYA-" + System.currentTimeMillis();
+        payBtn.setEnabled(false);
+        payBtn.setText("Submitting Order...");
 
-        new android.app.AlertDialog.Builder(this)
-                .setTitle("Order Ready")
-                .setMessage(
-                        "Order Number: " + orderNumber +
-                        "\n\n" +
-                        "Total: ₦" +
-                        CartManager.getInstance().getTotalPrice() +
-                        "\n\n" +
-                        "Please transfer the exact amount to the bank account shown above."
-                )
-                .setPositiveButton(
-                        "I've Made the Transfer",
-                        (dialog, which) -> {
+        executor.execute(() -> {
 
-                            Toast.makeText(
-                                    this,
-                                    "Order " + orderNumber +
-                                    " received successfully!",
-                                    Toast.LENGTH_LONG
-                            ).show();
+            try {
 
-                            CartManager.getInstance().clearCart();
+                JSONObject order = new JSONObject();
 
-                            Intent intent = new Intent(
-                                    CheckoutActivity.this,
-                                    MainActivity.class
+                order.put("customer_name", name);
+                order.put("customer_phone", phone);
+                order.put("delivery_address", address);
+                order.put("notes", "");
+
+                JSONArray items = new JSONArray();
+
+                for (CartManager.CartItem cartItem : cartItems) {
+
+                    Dish dish = cartItem.dish;
+
+                    JSONObject item = new JSONObject();
+
+                    item.put("dish_id", dish.id);
+                    item.put("dish_name", dish.name);
+                    item.put("unit_price", dish.price);
+                    item.put("quantity", cartItem.quantity);
+
+                    items.put(item);
+                }
+
+                order.put("items", items);
+
+                String response = sendOrder(order);
+
+                JSONObject result =
+                        new JSONObject(response);
+
+                boolean success =
+                        result.optBoolean("success", false);
+
+                String message =
+                        result.optString(
+                                "message",
+                                "Unable to submit order."
+                        );
+
+                if (success) {
+
+                    String orderNumber =
+                            result.optString(
+                                    "order_number",
+                                    ""
                             );
 
-                            intent.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                    Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            );
+                    mainHandler.post(() -> {
 
-                            startActivity(intent);
-                            finish();
-                        }
-                )
-                .setNegativeButton("Cancel", null)
-                .show();
+                        CartManager.getInstance().clearCart();
+
+                        payBtn.setEnabled(true);
+                        payBtn.setText("Order Submitted ✓");
+
+                        Toast.makeText(
+                                CheckoutActivity.this,
+                                "Order " + orderNumber +
+                                        " submitted successfully!",
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        finish();
+                    });
+
+                } else {
+
+                    mainHandler.post(() -> {
+
+                        payBtn.setEnabled(true);
+                        payBtn.setText("Place Order");
+
+                        Toast.makeText(
+                                CheckoutActivity.this,
+                                message,
+                                Toast.LENGTH_LONG
+                        ).show();
+                    });
+                }
+
+            } catch (Exception e) {
+
+                mainHandler.post(() -> {
+
+                    payBtn.setEnabled(true);
+                    payBtn.setText("Place Order");
+
+                    Toast.makeText(
+                            CheckoutActivity.this,
+                            "Network error. Please try again.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+            }
+        });
+    }
+
+    private String sendOrder(JSONObject order) throws Exception {
+
+        URL url = new URL(API_URL);
+
+        HttpURLConnection connection =
+                (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(20000);
+
+        connection.setRequestProperty(
+                "Content-Type",
+                "application/json; charset=UTF-8"
+        );
+
+        connection.setRequestProperty(
+                "Accept",
+                "application/json"
+        );
+
+        connection.setDoOutput(true);
+
+        byte[] data =
+                order.toString().getBytes(
+                        StandardCharsets.UTF_8
+                );
+
+        try (OutputStream output =
+                     connection.getOutputStream()) {
+
+            output.write(data);
+            output.flush();
+        }
+
+        int responseCode =
+                connection.getResponseCode();
+
+        InputStream inputStream;
+
+        if (responseCode >= 200 &&
+                responseCode < 400) {
+
+            inputStream =
+                    connection.getInputStream();
+
+        } else {
+
+            inputStream =
+                    connection.getErrorStream();
+        }
+
+        if (inputStream == null) {
+            throw new Exception(
+                    "No response from server"
+            );
+        }
+
+        StringBuilder response =
+                new StringBuilder();
+
+        try (BufferedReader reader =
+                     new BufferedReader(
+                             new InputStreamReader(
+                                     inputStream,
+                                     StandardCharsets.UTF_8
+                             ))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+        }
+
+        connection.disconnect();
+
+        return response.toString();
     }
 
     @Override
