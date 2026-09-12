@@ -5,92 +5,120 @@
     android:orientation="vertical"
     android:background="#06452F">
 
-    <!-- ELEGANT HEADER -->
+    <!-- PREMIUM HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="140dp"
         android:background="#06452F"
         android:orientation="vertical"
-        android:gravity="center"
-        android:paddingVertical="12dp">
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="16dp">
+
+        <!-- TOP ROW: TITLE + ICONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="IyaAdam"
+                android:textSize="38sp"
+                android:textStyle="bold"
+                android:textColor="@color/gold"
+                android:fontFamily="serif"
+                android:shadowColor="@color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔔"
+                android:textSize="24sp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛒"
+                android:textSize="24sp" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="IyaAdam Kitchen"
-            android:textSize="28sp"
-            android:textStyle="bold"
+            android:text="Kitchen"
+            android:textSize="16sp"
             android:textColor="@color/gold"
-            android:textAlignment="center"
-            android:fontFamily="serif"
-            android:shadowColor="@color/black"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2" />
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="10dp" />
 
+        <!-- INSCRIPTION -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Visit IyaAdam Kitchen @ Awokoya, Ijebu Ode for delicious experience"
-            android:textSize="9sp"
+            android:text="Visit IyaAdam Kitchen @ Awokoya, Ijebu Ode\nfor delicious experience"
+            android:textSize="11sp"
             android:textColor="@color/cream_light"
             android:textAlignment="center"
-            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="2dp"
             android:letterSpacing="0.01" />
     </LinearLayout>
 
-    <!-- RED & WHITE RIBBON -->
+    <!-- RIBBON -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:background="@color/alert_red" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white" />
 
-    <!-- HERO SECTION (REDUCED) -->
+    <!-- HERO -->
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="120dp"
         android:src="@drawable/images"
-        android:scaleType="centerCrop"
-        android:contentDescription="Hero Image" />
+        android:scaleType="centerCrop" />
 
-    <!-- RED & WHITE RIBBON -->
+    <!-- RIBBON -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white" />
-
     <View
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:background="@color/alert_red" />
 
-    <!-- CATEGORIES (COMPACT & VISIBLE) -->
+    <!-- CATEGORIES -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="#06452F"
-        android:scrollbars="none"
-        android:paddingVertical="6dp">
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingHorizontal="8dp"
             android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_height="70dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginHorizontal="3dp"
-                android:background="@drawable/card_white_rounded">
+                android:background="@drawable/card_curvy">
                 <ImageView
                     android:layout_width="55dp"
                     android:layout_height="45dp"
@@ -108,11 +136,11 @@
 
             <LinearLayout
                 android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_height="70dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginHorizontal="3dp"
-                android:background="@drawable/card_white_rounded">
+                android:background="@drawable/card_curvy">
                 <ImageView
                     android:layout_width="55dp"
                     android:layout_height="45dp"
@@ -130,11 +158,11 @@
 
             <LinearLayout
                 android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_height="70dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginHorizontal="3dp"
-                android:background="@drawable/card_white_rounded">
+                android:background="@drawable/card_curvy">
                 <ImageView
                     android:layout_width="55dp"
                     android:layout_height="45dp"
@@ -152,11 +180,11 @@
 
             <LinearLayout
                 android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_height="70dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginHorizontal="3dp"
-                android:background="@drawable/card_white_rounded">
+                android:background="@drawable/card_curvy">
                 <ImageView
                     android:layout_width="55dp"
                     android:layout_height="45dp"
@@ -175,45 +203,38 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- RED & WHITE RIBBON -->
+    <!-- RIBBON -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/alert_red" />
 
-    <!-- FEATURED TITLE -->
+    <!-- TITLE -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingVertical="10dp"
-        android:gravity="center_vertical"
         android:background="#06452F">
-
         <View
             android:layout_width="4dp"
             android:layout_height="18dp"
             android:background="@color/alert_red"
             android:layout_marginEnd="8dp" />
-
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Featured Dishes"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/gold" />
-
     </LinearLayout>
 
-    <!-- DISHES RECYCLER -->
+    <!-- DISHES -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dishes_recycler"
         android:layout_width="match_parent"
@@ -223,12 +244,11 @@
         android:paddingVertical="8dp"
         android:background="#06452F" />
 
-    <!-- RED & WHITE RIBBON -->
+    <!-- RIBBON -->
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/alert_red" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -241,105 +261,95 @@
         android:background="#06452F"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingVertical="12dp"
-        android:paddingHorizontal="16dp">
+        android:paddingVertical="12dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/ic_home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginEnd="8dp">
-            <TextView
-                android:id="@+id/ic_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="12sp"
-                android:textColor="@color/gold"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Home"
+            android:textSize="12sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/ic_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginEnd="8dp">
-            <TextView
-                android:id="@+id/ic_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Menu"
-                android:textSize="12sp"
-                android:textColor="@color/gold"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Menu"
+            android:textSize="12sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/ic_cart_nav"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginEnd="8dp">
-            <TextView
-                android:id="@+id/ic_cart_nav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cart"
-                android:textSize="12sp"
-                android:textColor="@color/gold"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Cart"
+            android:textSize="12sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/ic_orders"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginEnd="8dp">
-            <TextView
-                android:id="@+id/ic_orders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Orders"
-                android:textSize="12sp"
-                android:textColor="@color/gold"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Music"
+            android:textSize="12sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/ic_person"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/ic_person"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="12sp"
-                android:textColor="@color/gold"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="Profile"
+            android:textSize="12sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:textAlignment="center" />
 
     </LinearLayout>
 
     <!-- CREDIT -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="fdc: +2347089364492"
-        android:textSize="9sp"
-        android:textColor="@color/gold"
-        android:textAlignment="center"
-        android:paddingVertical="8dp"
         android:background="#06452F"
-        android:letterSpacing="0.01" />
+        android:gravity="center"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="16dp">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="1dp"
+            android:background="@color/alert_red"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fdc: +2347089364492"
+            android:textSize="10sp"
+            android:textColor="@color/gold"
+            android:textStyle="bold"
+            android:letterSpacing="0.02" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="1dp"
+            android:background="@color/alert_red"
+            android:layout_marginStart="12dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
