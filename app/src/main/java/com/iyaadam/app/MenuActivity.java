@@ -3,8 +3,8 @@ package com.iyaadam.app;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +40,7 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_menu);
 
         executorService = Executors.newSingleThreadExecutor();
@@ -52,34 +53,58 @@ public class MenuActivity extends AppCompatActivity {
 
         adapter = new DishAdapter(
                 this,
-                displayedDishes
+                displayedDishes,
+                new DishAdapter.OnDishClickListener() {
+
+                    @Override
+                    public void onDishClick(Dish dish) {
+                        addDishToCart(dish);
+                    }
+
+                    @Override
+                    public void onAddToCart(Dish dish) {
+                        addDishToCart(dish);
+                    }
+                }
         );
 
         menuRecycler.setAdapter(adapter);
 
         setupButtons();
 
-        // Show local menu immediately.
+        // Load local dishes immediately.
         loadLocalMenu();
 
-        // Then replace it with live menu from the server.
+        // Then replace them with the live website menu.
         loadLiveMenu();
     }
 
     private void setupButtons() {
 
-        ImageView backButton = findViewById(R.id.menu_back_btn);
+        ImageView backButton =
+                findViewById(R.id.back_btn);
 
         if (backButton != null) {
             backButton.setOnClickListener(v -> finish());
         }
 
-        Button allButton = findViewById(R.id.category_all);
-        Button africanButton = findViewById(R.id.category_african);
-        Button continentalButton = findViewById(R.id.category_continental);
-        Button grillsButton = findViewById(R.id.category_grills);
-        Button riceButton = findViewById(R.id.category_rice);
-        Button soupsButton = findViewById(R.id.category_soups);
+        TextView allButton =
+                findViewById(R.id.category_all);
+
+        TextView africanButton =
+                findViewById(R.id.category_african);
+
+        TextView continentalButton =
+                findViewById(R.id.category_continental);
+
+        TextView grillsButton =
+                findViewById(R.id.category_grills);
+
+        TextView riceButton =
+                findViewById(R.id.category_rice);
+
+        TextView soupsButton =
+                findViewById(R.id.category_soups);
 
         if (allButton != null) {
             allButton.setOnClickListener(v ->
@@ -117,29 +142,61 @@ public class MenuActivity extends AppCompatActivity {
             );
         }
 
-        Button customOrderButton =
+        // Custom Order is a LinearLayout in your XML.
+        android.view.View customOrderButton =
                 findViewById(R.id.custom_order_btn);
 
         if (customOrderButton != null) {
+
             customOrderButton.setOnClickListener(v -> {
 
-                Intent intent = new Intent(
-                        MenuActivity.this,
-                        CustomOrderActivity.class
-                );
+                Intent intent =
+                        new Intent(
+                                MenuActivity.this,
+                                CustomOrderActivity.class
+                        );
 
                 startActivity(intent);
             });
         }
 
-        Button whatsappButton =
+        // WhatsApp is a TextView in your XML.
+        TextView whatsappButton =
                 findViewById(R.id.whatsapp_btn);
 
         if (whatsappButton != null) {
+
             whatsappButton.setOnClickListener(v ->
                     openWhatsApp()
             );
         }
+    }
+
+    private void addDishToCart(Dish dish) {
+
+        if (dish == null) {
+            return;
+        }
+
+        if (!dish.available) {
+
+            Toast.makeText(
+                    this,
+                    "This dish is currently unavailable.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        CartManager.getInstance()
+                .addItem(dish);
+
+        Toast.makeText(
+                this,
+                dish.name + " added to cart",
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
     private void loadLocalMenu() {
@@ -258,14 +315,17 @@ public class MenuActivity extends AppCompatActivity {
 
             try {
 
-                URL url = new URL(MENU_API);
+                URL url =
+                        new URL(MENU_API);
 
                 connection =
-                        (HttpURLConnection) url.openConnection();
+                        (HttpURLConnection)
+                                url.openConnection();
 
                 connection.setRequestMethod("GET");
                 connection.setConnectTimeout(15000);
                 connection.setReadTimeout(15000);
+
                 connection.setRequestProperty(
                         "Accept",
                         "application/json"
@@ -274,9 +334,11 @@ public class MenuActivity extends AppCompatActivity {
                 int responseCode =
                         connection.getResponseCode();
 
-                if (responseCode != HttpURLConnection.HTTP_OK) {
+                if (responseCode !=
+                        HttpURLConnection.HTTP_OK) {
+
                     throw new Exception(
-                            "Server returned " + responseCode
+                            "HTTP " + responseCode
                     );
                 }
 
@@ -303,17 +365,17 @@ public class MenuActivity extends AppCompatActivity {
                 inputStream.close();
 
                 JSONObject json =
-                        new JSONObject(response.toString());
+                        new JSONObject(
+                                response.toString()
+                        );
 
-                boolean success =
-                        json.optBoolean("success", false);
+                if (!json.optBoolean(
+                        "success",
+                        false
+                )) {
 
-                if (!success) {
                     throw new Exception(
-                            json.optString(
-                                    "message",
-                                    "Unable to load menu"
-                            )
+                            "Menu API returned an error."
                     );
                 }
 
@@ -321,20 +383,23 @@ public class MenuActivity extends AppCompatActivity {
                         json.optJSONArray("items");
 
                 if (items == null) {
+
                     throw new Exception(
-                            "No menu items returned."
+                            "No menu items found."
                     );
                 }
 
                 List<Dish> liveDishes =
                         new ArrayList<>();
 
-                for (int i = 0; i < items.length(); i++) {
+                for (int i = 0;
+                     i < items.length();
+                     i++) {
 
                     JSONObject item =
                             items.getJSONObject(i);
 
-                    String id =
+                    String dishId =
                             item.optString(
                                     "dish_id",
                                     String.valueOf(
@@ -372,17 +437,18 @@ public class MenuActivity extends AppCompatActivity {
                                     1
                             ) == 1;
 
-                    Dish dish = new Dish(
-                            id,
-                            name,
-                            (int) price,
-                            description,
-                            imageUrl,
-                            0,
-                            0,
-                            0,
-                            available
-                    );
+                    Dish dish =
+                            new Dish(
+                                    dishId,
+                                    name,
+                                    (int) price,
+                                    description,
+                                    imageUrl,
+                                    0,
+                                    0,
+                                    0,
+                                    available
+                            );
 
                     liveDishes.add(dish);
                 }
@@ -396,7 +462,6 @@ public class MenuActivity extends AppCompatActivity {
                     displayedDishes.addAll(liveDishes);
 
                     adapter.notifyDataSetChanged();
-
                 });
 
             } catch (Exception e) {
@@ -408,7 +473,6 @@ public class MenuActivity extends AppCompatActivity {
                             "Using offline menu",
                             Toast.LENGTH_SHORT
                     ).show();
-
                 });
 
             } finally {
@@ -426,7 +490,9 @@ public class MenuActivity extends AppCompatActivity {
 
         if (category.equalsIgnoreCase("all")) {
 
-            displayedDishes.addAll(allDishes);
+            displayedDishes.addAll(
+                    allDishes
+            );
 
         } else {
 
@@ -435,7 +501,10 @@ public class MenuActivity extends AppCompatActivity {
                 String dishCategory =
                         getDishCategory(dish.id);
 
-                if (dishCategory.equalsIgnoreCase(category)) {
+                if (dishCategory.equalsIgnoreCase(
+                        category
+                )) {
+
                     displayedDishes.add(dish);
                 }
             }
@@ -479,7 +548,8 @@ public class MenuActivity extends AppCompatActivity {
 
         try {
 
-            String phone = "2347089364492";
+            String phone =
+                    "2347089364492";
 
             String message =
                     "Hello IyaAdam Kitchen, I would like to make an enquiry.";
