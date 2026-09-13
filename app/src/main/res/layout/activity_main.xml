@@ -84,18 +84,21 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="🔔"
-                    android:textSize="21sp"/>
+                    android:textSize="21sp"
+                    android:contentDescription="Notifications"/>
 
                 <TextView
+                    android:id="@+id/notification_badge"
                     android:layout_width="17dp"
                     android:layout_height="17dp"
                     android:layout_gravity="top|end"
                     android:gravity="center"
-                    android:text="1"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="9sp"
                     android:textStyle="bold"
-                    android:background="@drawable/badge_red"/>
+                    android:background="@drawable/badge_red"
+                    android:visibility="gone"/>
             </FrameLayout>
 
             <FrameLayout
@@ -112,18 +115,21 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="🛒"
-                    android:textSize="21sp"/>
+                    android:textSize="21sp"
+                    android:contentDescription="Cart"/>
 
                 <TextView
+                    android:id="@+id/cart_badge"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="top|end"
                     android:gravity="center"
-                    android:text="2"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="9sp"
                     android:textStyle="bold"
-                    android:background="@drawable/badge_red"/>
+                    android:background="@drawable/badge_red"
+                    android:visibility="gone"/>
             </FrameLayout>
 
         </LinearLayout>
@@ -502,6 +508,7 @@
                 android:textStyle="bold"/>
         </LinearLayout>
 
+        <!-- MUSIC -->
         <LinearLayout
             android:id="@+id/ic_orders"
             android:layout_width="0dp"
@@ -517,12 +524,12 @@
                 android:layout_height="25dp"
                 android:src="@drawable/ic_orders"
                 android:tint="#006B4F"
-                android:contentDescription="Orders"/>
+                android:contentDescription="Music"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Orders"
+                android:text="Music"
                 android:textColor="#006B4F"
                 android:textSize="11sp"
                 android:textStyle="bold"/>
