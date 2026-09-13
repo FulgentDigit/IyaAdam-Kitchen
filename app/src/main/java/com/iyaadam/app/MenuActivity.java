@@ -3,6 +3,8 @@ package com.iyaadam.app;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,15 +74,16 @@ public class MenuActivity extends AppCompatActivity {
 
         setupButtons();
 
-        // Load local dishes immediately.
+        // Show the existing local menu immediately.
         loadLocalMenu();
 
-        // Then replace them with the live website menu.
+        // Then load the live menu from the server.
         loadLiveMenu();
     }
 
     private void setupButtons() {
 
+        // Your XML uses back_btn.
         ImageView backButton =
                 findViewById(R.id.back_btn);
 
@@ -88,22 +91,22 @@ public class MenuActivity extends AppCompatActivity {
             backButton.setOnClickListener(v -> finish());
         }
 
-        TextView allButton =
+        Button allButton =
                 findViewById(R.id.category_all);
 
-        TextView africanButton =
+        Button africanButton =
                 findViewById(R.id.category_african);
 
-        TextView continentalButton =
+        Button continentalButton =
                 findViewById(R.id.category_continental);
 
-        TextView grillsButton =
+        Button grillsButton =
                 findViewById(R.id.category_grills);
 
-        TextView riceButton =
+        Button riceButton =
                 findViewById(R.id.category_rice);
 
-        TextView soupsButton =
+        Button soupsButton =
                 findViewById(R.id.category_soups);
 
         if (allButton != null) {
@@ -142,8 +145,8 @@ public class MenuActivity extends AppCompatActivity {
             );
         }
 
-        // Custom Order is a LinearLayout in your XML.
-        android.view.View customOrderButton =
+        // custom_order_btn is a LinearLayout in your XML.
+        View customOrderButton =
                 findViewById(R.id.custom_order_btn);
 
         if (customOrderButton != null) {
@@ -160,7 +163,7 @@ public class MenuActivity extends AppCompatActivity {
             });
         }
 
-        // WhatsApp is a TextView in your XML.
+        // whatsapp_btn is a TextView in your XML.
         TextView whatsappButton =
                 findViewById(R.id.whatsapp_btn);
 
@@ -189,8 +192,8 @@ public class MenuActivity extends AppCompatActivity {
             return;
         }
 
-        CartManager.getInstance()
-                .addItem(dish);
+        // Your CartManager uses add(), not addItem().
+        CartManager.getInstance().add(dish);
 
         Toast.makeText(
                 this,
@@ -323,6 +326,7 @@ public class MenuActivity extends AppCompatActivity {
                                 url.openConnection();
 
                 connection.setRequestMethod("GET");
+
                 connection.setConnectTimeout(15000);
                 connection.setReadTimeout(15000);
 
@@ -369,10 +373,13 @@ public class MenuActivity extends AppCompatActivity {
                                 response.toString()
                         );
 
-                if (!json.optBoolean(
-                        "success",
-                        false
-                )) {
+                boolean success =
+                        json.optBoolean(
+                                "success",
+                                false
+                        );
+
+                if (!success) {
 
                     throw new Exception(
                             "Menu API returned an error."
@@ -437,6 +444,10 @@ public class MenuActivity extends AppCompatActivity {
                                     1
                             ) == 1;
 
+                    /*
+                     * Dish.java expects an int price,
+                     * so convert the API double safely.
+                     */
                     Dish dish =
                             new Dish(
                                     dishId,
