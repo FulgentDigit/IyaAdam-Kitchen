@@ -13,14 +13,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView menuRecycler;
     private List<Dish> allDishes;
     private DishAdapter adapter;
+
+    private final ExecutorService executor =
+            Executors.newSingleThreadExecutor();
+
+    private static final String MENU_API =
+            "https://iyaadam.uhd.com.ng/api/menu.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +47,10 @@ public class MenuActivity extends AppCompatActivity {
         TextView whatsappBtn = findViewById(R.id.whatsapp_btn);
 
         menuRecycler = findViewById(R.id.menu_recycler);
+
+        menuRecycler.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
 
         backBtn.setOnClickListener(v -> finish());
 
@@ -45,14 +64,6 @@ public class MenuActivity extends AppCompatActivity {
 
         whatsappBtn.setOnClickListener(v -> openWhatsApp());
 
-        menuRecycler.setLayoutManager(
-                new LinearLayoutManager(this)
-        );
-
-        allDishes = createAllDishes();
-
-        showDishes(allDishes);
-
         Button all = findViewById(R.id.category_all);
         Button african = findViewById(R.id.category_african);
         Button continental = findViewById(R.id.category_continental);
@@ -63,10 +74,10 @@ public class MenuActivity extends AppCompatActivity {
         all.setOnClickListener(v -> showDishes(allDishes));
 
         african.setOnClickListener(v ->
-                showDishesByIds(1, 3, 5, 6, 7));
+                showDishesByIds(1, 5, 7));
 
         continental.setOnClickListener(v ->
-                showDishesByIds(4, 8));
+                showDishesByIds(4));
 
         grills.setOnClickListener(v ->
                 showDishesByIds(3));
@@ -75,7 +86,158 @@ public class MenuActivity extends AppCompatActivity {
                 showDishesByIds(2, 8));
 
         soups.setOnClickListener(v ->
-                showDishesByIds(1, 3, 6, 7));
+                showDishesByIds(6));
+
+        /*
+         * Show local menu immediately while
+         * the live menu is loading.
+         */
+        allDishes = createAllDishes();
+        showDishes(allDishes);
+
+        /*
+         * Now load the live menu.
+         */
+        loadLiveMenu();
+    }
+
+    private void loadLiveMenu() {
+
+        executor.execute(() -> {
+
+            HttpURLConnection connection = null;
+
+            try {
+
+                URL url = new URL(MENU_API);
+
+                connection =
+                        (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
+                connection.setRequestProperty(
+                        "Accept",
+                        "application/json"
+                );
+
+                int responseCode =
+                        connection.getResponseCode();
+
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    throw new Exception("HTTP " + responseCode);
+                }
+
+                BufferedReader reader =
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        connection.getInputStream()
+                                )
+                        );
+
+                StringBuilder result =
+                        new StringBuilder();
+
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                reader.close();
+
+                JSONObject response =
+                        new JSONObject(result.toString());
+
+                if (!response.optBoolean("success", false)) {
+                    throw new Exception("API returned failure");
+                }
+
+                JSONArray items =
+                        response.getJSONArray("items");
+
+                List<Dish> liveDishes =
+                        new ArrayList<>();
+
+                for (int i = 0; i < items.length(); i++) {
+
+                    JSONObject item =
+                            items.getJSONObject(i);
+
+                    String id =
+                            String.valueOf(
+                                    item.optInt("id")
+                            );
+
+                    String name =
+                            item.optString("name");
+
+                    double price =
+                            item.optDouble("price", 0);
+
+                    String description =
+                            item.optString("description");
+
+                    String imageUrl =
+                            item.optString(
+                                    "image_url",
+                                    ""
+                            );
+
+                    /*
+                     * These are not stored in the database yet,
+                     * so retain useful display values.
+                     */
+                    double rating = 4.5;
+                    int reviewCount = 0;
+                    int prepTime = 20;
+
+                    liveDishes.add(
+                            new Dish(
+                                    id,
+                                    name,
+                                    price,
+                                    description,
+                                    imageUrl,
+                                    rating,
+                                    reviewCount,
+                                    prepTime,
+                                    true
+                            )
+                    );
+                }
+
+                runOnUiThread(() -> {
+
+                    if (!liveDishes.isEmpty()) {
+
+                        allDishes = liveDishes;
+
+                        showDishes(allDishes);
+
+                        Toast.makeText(
+                                MenuActivity.this,
+                                "Menu updated",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+
+            } catch (Exception e) {
+
+                /*
+                 * Local menu remains active.
+                 * No error popup is needed.
+                 */
+
+            } finally {
+
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        });
     }
 
     private void showDishes(List<Dish> dishes) {
@@ -102,14 +264,22 @@ public class MenuActivity extends AppCompatActivity {
 
     private void showDishesByIds(int... ids) {
 
-        List<Dish> filtered = new ArrayList<>();
+        List<Dish> filtered =
+                new ArrayList<>();
+
+        if (allDishes == null) {
+            return;
+        }
 
         for (Dish dish : allDishes) {
 
             try {
-                int dishId = Integer.parseInt(dish.id);
+
+                int dishId =
+                        Integer.parseInt(dish.id);
 
                 for (int id : ids) {
+
                     if (dishId == id) {
                         filtered.add(dish);
                         break;
@@ -139,6 +309,7 @@ public class MenuActivity extends AppCompatActivity {
         String phone = "2347089364492";
 
         try {
+
             Intent intent = new Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse("https://wa.me/" + phone)
@@ -156,6 +327,9 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Local fallback menu.
+     */
     private List<Dish> createAllDishes() {
 
         List<Dish> dishes = new ArrayList<>();
@@ -257,5 +431,11 @@ public class MenuActivity extends AppCompatActivity {
         ));
 
         return dishes;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
     }
 }
