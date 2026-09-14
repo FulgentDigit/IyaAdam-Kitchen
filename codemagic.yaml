@@ -12,8 +12,6 @@ workflows:
     scripts:
       - name: Prepare signing keystore
         script: |
-          echo "Combining JKS Base64 parts..."
-
           printf '%s' "$KEYSTORE_PART_A$KEYSTORE_PART_B" > "$CM_BUILD_DIR/keystore.b64"
 
           base64 --decode \
@@ -22,8 +20,6 @@ workflows:
 
           test -s "$CM_BUILD_DIR/iyaadam.keystore"
 
-          echo "Testing JKS keystore..."
-
           keytool -list \
             -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
             -storetype JKS \
@@ -31,17 +27,38 @@ workflows:
             -storepass "$KEYSTORE_PASSWORD" \
             >/dev/null
 
-          echo "JKS keystore verified successfully."
+          echo "JKS keystore verified."
 
-      - name: Build Android Release
+      - name: Build unsigned Android App Bundle
         script: |
           cd "$CM_BUILD_DIR"
 
           gradle wrapper --gradle-version 8.9
-
           chmod +x gradlew
 
-          ./gradlew clean bundleRelease
+          ./gradlew clean bundleRelease \
+            -Pandroid.injected.signing.store.file="$CM_BUILD_DIR/iyaadam.keystore" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$KEYSTORE_PASSWORD"
+
+      - name: Sign Android App Bundle
+        script: |
+          AAB="$CM_BUILD_DIR/app/build/outputs/bundle/release/app-release.aab"
+
+          test -f "$AAB"
+
+          jarsigner \
+            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
+            -storetype JKS \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEYSTORE_PASSWORD" \
+            "$AAB" \
+            "$KEY_ALIAS"
+
+          jarsigner -verify "$AAB"
+
+          echo "AAB signing successful."
 
     artifacts:
       - app/build/outputs/bundle/release/app-release.aab
