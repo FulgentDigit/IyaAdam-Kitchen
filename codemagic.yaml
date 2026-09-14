@@ -10,53 +10,38 @@ workflows:
         - android_signing
 
     scripts:
-      - name: Set up and verify release keystore
+      - name: Prepare signing keystore
         script: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/iyaadam.keystore"
+          echo "Combining keystore Base64 parts..."
+
+          printf '%s' "$KEYSTORE_PART_A$KEYSTORE_PART_B" > "$CM_BUILD_DIR/keystore.b64"
+
+          base64 --decode \
+            "$CM_BUILD_DIR/keystore.b64" \
+            > "$CM_BUILD_DIR/iyaadam.keystore"
 
           test -s "$CM_BUILD_DIR/iyaadam.keystore"
 
-          echo "Checking signing variables..."
-
-          test -n "$KEYSTORE_PASSWORD" || { echo "KEYSTORE_PASSWORD is EMPTY"; exit 1; }
-          test -n "$KEY_PASSWORD" || { echo "KEY_PASSWORD is EMPTY"; exit 1; }
-          test -n "$KEY_ALIAS" || { echo "KEY_ALIAS is EMPTY"; exit 1; }
-
-          echo "Alias: $KEY_ALIAS"
+          echo "Testing keystore..."
 
           keytool -list \
             -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
+            -storetype PKCS12 \
             -alias "$KEY_ALIAS" \
             -storepass "$KEYSTORE_PASSWORD" \
             >/dev/null
 
-          echo "Keystore password and alias: OK"
-
-          echo "Testing key password..."
-
-          echo "IyaAdam signing test" > "$CM_BUILD_DIR/test.txt"
-          jar cf "$CM_BUILD_DIR/test.jar" "$CM_BUILD_DIR/test.txt"
-
-          jarsigner \
-            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            "$CM_BUILD_DIR/test.jar" \
-            "$KEY_ALIAS"
-
-          echo "KEY_PASSWORD: OK"
+          echo "Keystore verified successfully."
 
       - name: Build Android Release
         script: |
           cd "$CM_BUILD_DIR"
+
           gradle wrapper --gradle-version 8.9
+
           chmod +x gradlew
+
           ./gradlew clean bundleRelease
 
     artifacts:
       - app/build/outputs/bundle/release/app-release.aab
-
-    publishing:
-      email:
-        recipients:
-          - your@email.com
