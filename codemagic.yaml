@@ -10,10 +10,20 @@ workflows:
         - android_signing
 
     scripts:
-      - name: Set up release keystore
+      - name: Set up and verify release keystore
         script: |
           echo "$KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/iyaadam.keystore"
-          ls -lh "$CM_BUILD_DIR/iyaadam.keystore"
+
+          echo "Checking keystore..."
+          test -s "$CM_BUILD_DIR/iyaadam.keystore"
+
+          keytool -list \
+            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
+            -alias "$KEY_ALIAS" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            >/dev/null
+
+          echo "Keystore verification successful."
 
       - name: Build Android Release
         script: |
