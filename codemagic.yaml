@@ -1,57 +1,26 @@
 workflows:
-  android-workflow:
-    name: IyaAdam Kitchen Release
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+  android-release:
+    name: IyaAdam Kitchen Android Release
 
     environment:
+      vars:
+        PACKAGE_NAME: "com.iyaadam.app"
       java: 17
-      groups:
-        - android_signing
 
     scripts:
-      - name: Prepare signing keystore
+      - name: Generate Gradle Wrapper
         script: |
-          printf '%s' "$KEYSTORE_PART_A$KEYSTORE_PART_B" > "$CM_BUILD_DIR/keystore.b64"
+          gradle wrapper --gradle-version 8.14.1
 
-          base64 --decode \
-            "$CM_BUILD_DIR/keystore.b64" \
-            > "$CM_BUILD_DIR/iyaadam.keystore"
-
-          test -s "$CM_BUILD_DIR/iyaadam.keystore"
-
-          keytool -list \
-            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
-            -storetype JKS \
-            -alias "$KEY_ALIAS" \
-            -storepass "$KEYSTORE_PASSWORD" \
-            >/dev/null
-
-          echo "JKS keystore verified."
-
-      - name: Build unsigned Android App Bundle
+      - name: Make Gradle executable
         script: |
-          cd "$CM_BUILD_DIR"
+          chmod +x gradlew
 
-          gradle clean bundleRelease
-
-      - name: Sign Android App Bundle
+      - name: Build Android App Bundle
         script: |
-          AAB="$CM_BUILD_DIR/app/build/outputs/bundle/release/app-release.aab"
-
-          test -f "$AAB"
-
-          jarsigner \
-            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
-            -storetype JKS \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEYSTORE_PASSWORD" \
-            "$AAB" \
-            "$KEY_ALIAS"
-
-          jarsigner -verify "$AAB"
-
-          echo "AAB signing successful."
+          ./gradlew clean
+          ./gradlew bundleRelease --stacktrace
 
     artifacts:
-      - app/build/outputs/bundle/release/app-release.aab
+      - app/build/outputs/**/*.aab
+      - app/build/outputs/**/*.apk
