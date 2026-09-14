@@ -12,7 +12,7 @@ workflows:
     scripts:
       - name: Prepare signing keystore
         script: |
-          echo "Combining keystore Base64 parts..."
+          echo "Combining JKS Base64 parts..."
 
           printf '%s' "$KEYSTORE_PART_A$KEYSTORE_PART_B" > "$CM_BUILD_DIR/keystore.b64"
 
@@ -22,16 +22,16 @@ workflows:
 
           test -s "$CM_BUILD_DIR/iyaadam.keystore"
 
-          echo "Testing keystore..."
+          echo "Testing JKS keystore..."
 
           keytool -list \
             -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
-            -storetype PKCS12 \
+            -storetype JKS \
             -alias "$KEY_ALIAS" \
             -storepass "$KEYSTORE_PASSWORD" \
             >/dev/null
 
-          echo "Keystore verified successfully."
+          echo "JKS keystore verified successfully."
 
       - name: Build Android Release
         script: |
