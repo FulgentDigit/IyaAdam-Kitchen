@@ -14,7 +14,6 @@ workflows:
         script: |
           echo "$KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/iyaadam.keystore"
 
-          echo "Checking keystore..."
           test -s "$CM_BUILD_DIR/iyaadam.keystore"
 
           keytool -list \
@@ -28,7 +27,9 @@ workflows:
       - name: Build Android Release
         script: |
           cd "$CM_BUILD_DIR"
-          gradle clean bundleRelease
+          gradle wrapper --gradle-version 8.9
+          chmod +x gradlew
+          ./gradlew clean bundleRelease
 
     artifacts:
       - app/build/outputs/bundle/release/app-release.aab
