@@ -14,25 +14,9 @@ android {
         versionName "1.0"
     }
 
-    signingConfigs {
-        release {
-            if (System.getenv("CI") == "true") {
-                storeFile file(System.getenv("CM_BUILD_DIR") + "/iyaadam.keystore")
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEYSTORE_PASSWORD")
-                storeType "JKS"
-            }
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
-
-            if (System.getenv("CI") == "true") {
-                signingConfig signingConfigs.release
-            }
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
