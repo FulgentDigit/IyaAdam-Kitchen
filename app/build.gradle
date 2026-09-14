@@ -20,7 +20,7 @@ android {
                 storeFile file(System.getenv("CM_BUILD_DIR") + "/iyaadam.keystore")
                 storePassword System.getenv("KEYSTORE_PASSWORD")
                 keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
+                keyPassword System.getenv("KEYSTORE_PASSWORD")
                 storeType "PKCS12"
             }
         }
@@ -34,7 +34,8 @@ android {
                 signingConfig signingConfigs.release
             }
 
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
 
