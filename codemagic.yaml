@@ -33,14 +33,7 @@ workflows:
         script: |
           cd "$CM_BUILD_DIR"
 
-          gradle wrapper --gradle-version 8.9
-          chmod +x gradlew
-
-          ./gradlew clean bundleRelease \
-            -Pandroid.injected.signing.store.file="$CM_BUILD_DIR/iyaadam.keystore" \
-            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
-            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$KEYSTORE_PASSWORD"
+          gradle clean bundleRelease
 
       - name: Sign Android App Bundle
         script: |
