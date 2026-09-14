@@ -6,8 +6,15 @@ workflows:
 
     environment:
       java: 17
+      groups:
+        - android_signing
 
     scripts:
+      - name: Set up release keystore
+        script: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/iyaadam.keystore"
+          ls -l "$CM_BUILD_DIR/iyaadam.keystore"
+
       - name: Build Android Release
         script: |
           chmod +x gradlew
