@@ -13,12 +13,12 @@ workflows:
       - name: Set up release keystore
         script: |
           echo "$KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/iyaadam.keystore"
-          ls -l "$CM_BUILD_DIR/iyaadam.keystore"
+          ls -lh "$CM_BUILD_DIR/iyaadam.keystore"
 
       - name: Build Android Release
         script: |
-          chmod +x gradlew
-          ./gradlew clean bundleRelease
+          cd "$CM_BUILD_DIR"
+          gradle clean bundleRelease
 
     artifacts:
       - app/build/outputs/bundle/release/app-release.aab
