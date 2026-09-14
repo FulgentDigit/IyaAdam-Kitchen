@@ -16,13 +16,35 @@ workflows:
 
           test -s "$CM_BUILD_DIR/iyaadam.keystore"
 
+          echo "Checking signing variables..."
+
+          test -n "$KEYSTORE_PASSWORD" || { echo "KEYSTORE_PASSWORD is EMPTY"; exit 1; }
+          test -n "$KEY_PASSWORD" || { echo "KEY_PASSWORD is EMPTY"; exit 1; }
+          test -n "$KEY_ALIAS" || { echo "KEY_ALIAS is EMPTY"; exit 1; }
+
+          echo "Alias: $KEY_ALIAS"
+
           keytool -list \
             -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
             -alias "$KEY_ALIAS" \
             -storepass "$KEYSTORE_PASSWORD" \
             >/dev/null
 
-          echo "Keystore verification successful."
+          echo "Keystore password and alias: OK"
+
+          echo "Testing key password..."
+
+          echo "IyaAdam signing test" > "$CM_BUILD_DIR/test.txt"
+          jar cf "$CM_BUILD_DIR/test.jar" "$CM_BUILD_DIR/test.txt"
+
+          jarsigner \
+            -keystore "$CM_BUILD_DIR/iyaadam.keystore" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            "$CM_BUILD_DIR/test.jar" \
+            "$KEY_ALIAS"
+
+          echo "KEY_PASSWORD: OK"
 
       - name: Build Android Release
         script: |
