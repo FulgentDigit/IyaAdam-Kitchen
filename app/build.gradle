@@ -26,7 +26,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-
             signingConfig signingConfigs.release
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
@@ -48,33 +47,3 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 }
-
-Then check these two things
-
-Your Codemagic YAML should contain:
-
-environment:
-  java: 17
-
-  android_signing:
-    - iyaadam-release
-
-And your "build.gradle" now contains:
-
-signingConfig signingConfigs.release
-
-That means the chain is:
-
-Codemagic → "iyaadam-release" → original JKS → "iyaadam-upload" alias → release AAB
-
-One important correction
-
-Earlier you told me the project package is "com.iyaadam.app", and this Gradle file confirms it. Good.
-
-Now save both files and commit/push them to GitHub "main".
-
-Then go back to Codemagic and start:
-
-Start new build → "android-workflow" → "main"
-
-If the build fails, don't change anything yet. Send me the error and we'll fix the specific failure.
