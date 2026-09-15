@@ -9,6 +9,9 @@ workflows:
     environment:
       java: 17
 
+      android_signing:
+        - iyaadam-release
+
       vars:
         PACKAGE_NAME: "com.iyaadam.app"
 
