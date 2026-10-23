@@ -7,8 +7,8 @@ workflows:
     environment:
       java: 17
 
-      groups:
-        - android_signing
+      android_signing:
+        - iyaadam-release
 
       vars:
         PACKAGE_NAME: "com.iyaadam.app"
@@ -19,33 +19,16 @@ workflows:
           echo "===== IYAADAM KITCHEN ====="
           pwd
           ls -la
-
-          echo "===== GRADLE WRAPPER ====="
-          ls -la gradle/wrapper || true
-
-          echo "===== SIGNING CONFIGURATION CHECK ====="
-          if [ -n "$CM_KEYSTORE_PATH" ]; then
-            echo "Keystore path variable is configured."
-          else
-            echo "ERROR: CM_KEYSTORE_PATH is missing."
+          echo "===== SIGNING CHECK ====="
+          if [ -z "$CM_KEYSTORE_PATH" ]; then
+            echo "ERROR: Keystore path is missing."
             exit 1
           fi
-
-          if [ -n "$CM_KEYSTORE_PASSWORD" ] && \
-             [ -n "$CM_KEY_ALIAS" ] && \
-             [ -n "$CM_KEY_PASSWORD" ]; then
-            echo "Signing credential variables are configured."
-          else
-            echo "ERROR: One or more signing credential variables are missing."
-            exit 1
-          fi
-
           if [ ! -f "$CM_KEYSTORE_PATH" ]; then
-            echo "ERROR: Keystore file not found at configured path."
+            echo "ERROR: Keystore file is not available."
             exit 1
           fi
-
-          echo "Keystore file is available."
+          echo "Existing IyaAdam keystore is available."
 
       - name: Generate Gradle Wrapper
         script: |
