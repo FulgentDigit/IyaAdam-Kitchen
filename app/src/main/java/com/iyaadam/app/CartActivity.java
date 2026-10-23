@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CartActivity extends AppCompatActivity implements CartAdapter.OnCartChangeListener {
+public class CartActivity extends AppCompatActivity
+        implements CartAdapter.OnCartChangeListener {
 
     private RecyclerView cartRecycler;
     private CartAdapter adapter;
@@ -26,16 +29,53 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
         emptyMsg = findViewById(R.id.empty_msg);
         checkoutBtn = findViewById(R.id.checkout_btn);
 
-        cartRecycler.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CartAdapter(this, CartManager.getInstance().getCartItems(), this);
+        setupBackButton();
+
+        cartRecycler.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+        adapter = new CartAdapter(
+                this,
+                CartManager.getInstance().getCartItems(),
+                this
+        );
+
         cartRecycler.setAdapter(adapter);
 
         updateUI();
 
         checkoutBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+            Intent intent = new Intent(
+                    CartActivity.this,
+                    CheckoutActivity.class
+            );
             startActivity(intent);
         });
+    }
+
+    private void setupBackButton() {
+        // Connect the visible top back button.
+        View backButton = findViewById(R.id.back_btn);
+
+        if (backButton != null) {
+            backButton.setVisibility(View.VISIBLE);
+            backButton.setClickable(true);
+            backButton.setFocusable(true);
+
+            backButton.setOnClickListener(v -> returnToPreviousScreen());
+        }
+    }
+
+    private void returnToPreviousScreen() {
+        if (!isFinishing()) {
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        returnToPreviousScreen();
     }
 
     @Override
