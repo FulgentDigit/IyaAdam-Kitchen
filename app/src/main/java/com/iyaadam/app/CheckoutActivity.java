@@ -1,3 +1,4 @@
+
 package com.iyaadam.app;
 
 import android.os.Bundle;
@@ -6,6 +7,7 @@ import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +31,15 @@ public class CheckoutActivity extends AppCompatActivity {
     private static final String API_URL =
             "https://iyaadam.uhd.com.ng/api/create_order.php";
 
+    private static final String BANK_NAME =
+            "MONIEPOINT MICROFINANCE BANK";
+
+    private static final String ACCOUNT_NAME =
+            "ABIBAT YUSUF";
+
+    private static final String ACCOUNT_NUMBER =
+            "5258217689";
+
     private EditText nameInput;
     private EditText phoneInput;
     private EditText addressInput;
@@ -51,6 +62,20 @@ public class CheckoutActivity extends AppCompatActivity {
         phoneInput = findViewById(R.id.phone_input);
         addressInput = findViewById(R.id.address_input);
         payBtn = findViewById(R.id.pay_btn);
+
+        // Display updated bank transfer details
+        ((TextView) findViewById(R.id.bank_name))
+                .setText(BANK_NAME);
+
+        ((TextView) findViewById(R.id.account_name))
+                .setText(ACCOUNT_NAME);
+
+        ((TextView) findViewById(R.id.account_number))
+                .setText(ACCOUNT_NUMBER);
+
+        ((TextView) findViewById(R.id.payment_note))
+                .setText("Please transfer the exact order amount "
+                        + "to the account above.");
 
         backBtn.setOnClickListener(v -> finish());
 
@@ -85,11 +110,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 CartManager.getInstance().getCartItems();
 
         if (cartItems == null || cartItems.isEmpty()) {
-            Toast.makeText(
-                    this,
-                    "Your cart is empty",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Toast.makeText(this, "Your cart is empty",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -99,7 +121,6 @@ public class CheckoutActivity extends AppCompatActivity {
         executor.execute(() -> {
 
             try {
-
                 JSONObject order = new JSONObject();
 
                 order.put("customer_name", name);
@@ -110,7 +131,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 JSONArray items = new JSONArray();
 
                 for (CartManager.CartItem cartItem : cartItems) {
-
                     Dish dish = cartItem.dish;
 
                     JSONObject item = new JSONObject();
@@ -127,25 +147,20 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 String response = sendOrder(order);
 
-                JSONObject result =
-                        new JSONObject(response);
+                JSONObject result = new JSONObject(response);
 
                 boolean success =
                         result.optBoolean("success", false);
 
-                String message =
-                        result.optString(
-                                "message",
-                                "Unable to submit order."
-                        );
+                String message = result.optString(
+                        "message",
+                        "Unable to submit order."
+                );
 
                 if (success) {
 
                     String orderNumber =
-                            result.optString(
-                                    "order_number",
-                                    ""
-                            );
+                            result.optString("order_number", "");
 
                     mainHandler.post(() -> {
 
@@ -156,8 +171,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
                         Toast.makeText(
                                 CheckoutActivity.this,
-                                "Order " + orderNumber +
-                                        " submitted successfully!",
+                                "Order " + orderNumber
+                                        + " submitted successfully!",
                                 Toast.LENGTH_LONG
                         ).show();
 
@@ -219,50 +234,37 @@ public class CheckoutActivity extends AppCompatActivity {
 
         connection.setDoOutput(true);
 
-        byte[] data =
-                order.toString().getBytes(
-                        StandardCharsets.UTF_8
-                );
+        byte[] data = order.toString().getBytes(
+                StandardCharsets.UTF_8
+        );
 
-        try (OutputStream output =
-                     connection.getOutputStream()) {
-
+        try (OutputStream output = connection.getOutputStream()) {
             output.write(data);
             output.flush();
         }
 
-        int responseCode =
-                connection.getResponseCode();
+        int responseCode = connection.getResponseCode();
 
         InputStream inputStream;
 
-        if (responseCode >= 200 &&
-                responseCode < 400) {
-
-            inputStream =
-                    connection.getInputStream();
-
+        if (responseCode >= 200 && responseCode < 400) {
+            inputStream = connection.getInputStream();
         } else {
-
-            inputStream =
-                    connection.getErrorStream();
+            inputStream = connection.getErrorStream();
         }
 
         if (inputStream == null) {
-            throw new Exception(
-                    "No response from server"
-            );
+            connection.disconnect();
+            throw new Exception("No response from server");
         }
 
-        StringBuilder response =
-                new StringBuilder();
+        StringBuilder response = new StringBuilder();
 
-        try (BufferedReader reader =
-                     new BufferedReader(
-                             new InputStreamReader(
-                                     inputStream,
-                                     StandardCharsets.UTF_8
-                             ))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        inputStream,
+                        StandardCharsets.UTF_8
+                ))) {
 
             String line;
 
