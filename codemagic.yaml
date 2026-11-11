@@ -1,46 +1,65 @@
-IyaAdam-Kitchen
-IyaAdam-Kitchen
-github.com/FulgentDigit/IyaAdam-Kitchen
 
+workflows:
+  android:
+    name: IyaAdam Kitchen Android APK
+    max_build_duration: 120
+    instance_type: mac_mini_m2
 
-Start new build
-Build overview
-Click on the build steps for details.
-Preparing build machine
-26s
-Fetching app sources
-4s
-Set up code signing identities
-1s
-Prepare Gradle
-2s
+    environment:
+      android_signing:
+        - iyaadam-release
 
+      vars:
+        PACKAGE_NAME: "com.iyaadam.app"
 
+      java: 17
 
-Show command
-chmod: ./gradlew: No such file or directory
-Clean Project
-< 1s
-Build Release APK
-< 1s
-Verify APK
-< 1s
-Publishing
-1s
-Cleaning up
-< 1s
-Step 3 script `Prepare Gradle` exited with status code 1
+    scripts:
+      - name: Check Android Project
+        script: |
+          echo "Checking Android project files..."
+          ls -la
 
-Personal Account
-Personal Account
+          if [ ! -f "app/build.gradle" ] && [ ! -f "app/build.gradle.kts" ]; then
+            echo "ERROR: Android app Gradle file not found."
+            exit 1
+          fi
 
-Create a team
-Applications
-Builds
-OTA Updates
-App Preview
-Settings
-Billing
+      - name: Generate Gradle Wrapper
+        script: |
+          if [ ! -f "./gradlew" ]; then
+            echo "Gradle wrapper missing. Generating wrapper..."
+            gradle wrapper --gradle-version 8.14.1
+          else
+            echo "Existing Gradle wrapper found."
+          fi
 
+          if [ ! -f "./gradlew" ]; then
+            echo "ERROR: Gradle wrapper generation failed."
+            exit 1
+          fi
 
-Log out
+          chmod +x ./gradlew
+
+      - name: Clean Previous Build
+        script: |
+          ./gradlew clean
+
+      - name: Build Signed Release APK
+        script: |
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Verify APK
+        script: |
+          APK="app/build/outputs/apk/release/app-release.apk"
+
+          if [ ! -f "$APK" ]; then
+            echo "ERROR: APK was not generated."
+            exit 1
+          fi
+
+          echo "APK BUILD SUCCESSFUL"
+          ls -lh "$APK"
+
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
