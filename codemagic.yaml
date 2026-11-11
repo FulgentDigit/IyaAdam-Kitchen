@@ -1,6 +1,6 @@
 workflows:
-  workflows:
-    name: IyaAdam Kitchen Android
+  android:
+    name: IyaAdam Kitchen Android APK
     max_build_duration: 120
     instance_type: mac_mini_m2
 
@@ -14,47 +14,21 @@ workflows:
       java: 17
 
     scripts:
-      - name: Check Gradle Wrapper
+      - name: Prepare Gradle
         script: |
-          if [ ! -f "./gradlew" ]; then
-            echo "ERROR: Gradle wrapper not found."
-            exit 1
-          fi
           chmod +x ./gradlew
 
-      - name: Verify Release Signing
-        script: |
-          if [ -z "${CM_KEYSTORE_PATH:-}" ]; then
-            echo "ERROR: Release keystore is missing."
-            exit 1
-          fi
-          if [ -z "${CM_KEYSTORE_PASSWORD:-}" ] || \
-             [ -z "${CM_KEY_ALIAS:-}" ] || \
-             [ -z "${CM_KEY_PASSWORD:-}" ]; then
-            echo "ERROR: Release signing credentials are incomplete."
-            exit 1
-          fi
-          echo "Release signing credentials are available."
-
-      - name: Clean Previous Build
+      - name: Clean Project
         script: |
           ./gradlew clean
 
-      - name: Build Signed Release APK
+      - name: Build Release APK
         script: |
           ./gradlew assembleRelease --stacktrace
 
-      - name: Verify APK Output
+      - name: Verify APK
         script: |
-          APK_PATH="app/build/outputs/apk/release/app-release.apk"
-
-          if [ ! -f "$APK_PATH" ]; then
-            echo "ERROR: Release APK was not generated."
-            exit 1
-          fi
-
-          echo "APK successfully generated:"
-          ls -lh "$APK_PATH"
+          test -f app/build/outputs/apk/release/app-release.apk
 
     artifacts:
       - app/build/outputs/apk/release/*.apk
