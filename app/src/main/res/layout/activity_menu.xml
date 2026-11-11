@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -324,7 +325,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="+2347089364492"
+                android:text="+2347065214656"
                 android:textColor="@color/gold"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -343,7 +344,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
-                android:text="Developed by fdc: +2347089364492"
+                android:text="Developed by fdc: +2347065214656"
                 android:textColor="#777777"
                 android:textSize="10sp" />
 
