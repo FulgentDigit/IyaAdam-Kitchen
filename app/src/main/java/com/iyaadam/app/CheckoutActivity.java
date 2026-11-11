@@ -1,6 +1,7 @@
-
 package com.iyaadam.app;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,6 +32,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private static final String API_URL =
             "https://iyaadam.uhd.com.ng/api/create_order.php";
+
+    private static final String WHATSAPP_NUMBER =
+            "2347065214656";
 
     private static final String BANK_NAME =
             "MONIEPOINT MICROFINANCE BANK";
@@ -63,7 +68,7 @@ public class CheckoutActivity extends AppCompatActivity {
         addressInput = findViewById(R.id.address_input);
         payBtn = findViewById(R.id.pay_btn);
 
-        // Display updated bank transfer details
+        // Display bank transfer details.
         ((TextView) findViewById(R.id.bank_name))
                 .setText(BANK_NAME);
 
@@ -131,6 +136,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 JSONArray items = new JSONArray();
 
                 for (CartManager.CartItem cartItem : cartItems) {
+
                     Dish dish = cartItem.dish;
 
                     JSONObject item = new JSONObject();
@@ -164,6 +170,16 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     mainHandler.post(() -> {
 
+                        // Prepare WhatsApp message before clearing cart.
+                        String whatsappMessage =
+                                buildWhatsAppMessage(
+                                        name,
+                                        phone,
+                                        address,
+                                        orderNumber,
+                                        cartItems
+                                );
+
                         CartManager.getInstance().clearCart();
 
                         payBtn.setEnabled(true);
@@ -175,6 +191,9 @@ public class CheckoutActivity extends AppCompatActivity {
                                         + " submitted successfully!",
                                 Toast.LENGTH_LONG
                         ).show();
+
+                        // Open WhatsApp with the complete order.
+                        openWhatsApp(whatsappMessage);
 
                         finish();
                     });
@@ -209,6 +228,119 @@ public class CheckoutActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private String buildWhatsAppMessage(
+            String name,
+            String phone,
+            String address,
+            String orderNumber,
+            List<CartManager.CartItem> cartItems
+    ) {
+
+        StringBuilder message = new StringBuilder();
+
+        message.append("NEW ORDER - IYAADAM KITCHEN\n\n");
+
+        if (orderNumber != null && !orderNumber.isEmpty()) {
+            message.append("Order Number: ")
+                    .append(orderNumber)
+                    .append("\n");
+        }
+
+        message.append("\nCUSTOMER DETAILS\n");
+        message.append("Name: ").append(name).append("\n");
+        message.append("Phone: ").append(phone).append("\n");
+        message.append("Delivery Address: ")
+                .append(address).append("\n");
+
+        message.append("\nORDERED ITEMS\n");
+
+        double total = 0;
+
+        for (CartManager.CartItem cartItem : cartItems) {
+
+            Dish dish = cartItem.dish;
+
+            double itemTotal =
+                    dish.price * cartItem.quantity;
+
+            total += itemTotal;
+
+            message.append("\n")
+                    .append(dish.name)
+                    .append("\nQuantity: ")
+                    .append(cartItem.quantity)
+                    .append("\nUnit Price: ₦")
+                    .append(formatPrice(dish.price))
+                    .append("\nItem Total: ₦")
+                    .append(formatPrice(itemTotal))
+                    .append("\n");
+        }
+
+        message.append("\n------------------------\n");
+        message.append("ORDER TOTAL: ₦")
+                .append(formatPrice(total))
+                .append("\n");
+
+        message.append("\nPayment Bank: ")
+                .append(BANK_NAME);
+
+        message.append("\nAccount Name: ")
+                .append(ACCOUNT_NAME);
+
+        message.append("\nAccount Number: ")
+                .append(ACCOUNT_NUMBER);
+
+        message.append("\n\nPlease confirm this order.");
+
+        return message.toString();
+    }
+
+    private String formatPrice(double price) {
+
+        if (price == (long) price) {
+            return String.format(
+                    Locale.US,
+                    "%,d",
+                    (long) price
+            );
+        }
+
+        return String.format(
+                Locale.US,
+                "%,.2f",
+                price
+        );
+    }
+
+    private void openWhatsApp(String message) {
+
+        try {
+
+            String url =
+                    "https://wa.me/"
+                            + WHATSAPP_NUMBER
+                            + "?text="
+                            + Uri.encode(message);
+
+            Intent intent = new Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(url)
+            );
+
+            startActivity(intent);
+
+        } catch (Exception e) {
+
+            Toast.makeText(
+                    this,
+                    "Order saved successfully. "
+                            + "Please contact us on WhatsApp: "
+                            + "0706 521 4656",
+                    Toast.LENGTH_LONG
+            ).show();
+        }
     }
 
     private String sendOrder(JSONObject order) throws Exception {
