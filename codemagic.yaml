@@ -1,34 +1,46 @@
-workflows:
-  android:
-    name: IyaAdam Kitchen Android APK
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+IyaAdam-Kitchen
+IyaAdam-Kitchen
+github.com/FulgentDigit/IyaAdam-Kitchen
 
-    environment:
-      android_signing:
-        - iyaadam-release
 
-      vars:
-        PACKAGE_NAME: "com.iyaadam.app"
+Start new build
+Build overview
+Click on the build steps for details.
+Preparing build machine
+26s
+Fetching app sources
+4s
+Set up code signing identities
+1s
+Prepare Gradle
+2s
 
-      java: 17
 
-    scripts:
-      - name: Prepare Gradle
-        script: |
-          chmod +x ./gradlew
 
-      - name: Clean Project
-        script: |
-          ./gradlew clean
+Show command
+chmod: ./gradlew: No such file or directory
+Clean Project
+< 1s
+Build Release APK
+< 1s
+Verify APK
+< 1s
+Publishing
+1s
+Cleaning up
+< 1s
+Step 3 script `Prepare Gradle` exited with status code 1
 
-      - name: Build Release APK
-        script: |
-          ./gradlew assembleRelease --stacktrace
+Personal Account
+Personal Account
 
-      - name: Verify APK
-        script: |
-          test -f app/build/outputs/apk/release/app-release.apk
+Create a team
+Applications
+Builds
+OTA Updates
+App Preview
+Settings
+Billing
 
-    artifacts:
-      - app/build/outputs/apk/release/*.apk
+
+Log out
