@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- HEADER -->
+        <!-- PREMIUM HEADER -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@color/header_green"
+            android:layout_height="68dp"
+            android:background="#06452F"
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:paddingEnd="16dp">
@@ -47,57 +47,92 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FULL MENU"
-                    android:textColor="@color/gold"
+                    android:text="THE FOOD MARKETPLACE"
+                    android:textColor="#D4AF37"
                     android:textSize="10sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.15" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FRESH"
+                android:textColor="#002D21"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:background="#D4AF37" />
+
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/alert_red" />
+            android:background="#D4AF37" />
 
         <!-- INTRODUCTION -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:padding="16dp"
+            android:padding="18dp"
             android:orientation="vertical"
-            android:background="#FFFFFF">
+            android:background="#06452F">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome to our kitchen 👋"
-                android:textColor="#002D21"
-                android:textSize="19sp"
+                android:text="Good food. Great moments. ❤️"
+                android:textColor="#D4AF37"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:text="Welcome to IyaAdam Kitchen!"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Explore our selection of freshly prepared African and Continental dishes. Tap any meal to add it to your cart."
-                android:textColor="#555555"
+                android:text="Discover delicious African and Continental meals, freshly prepared with love. Explore our menu, choose your favourites and add them to your cart."
+                android:textColor="#D5E4DC"
                 android:textSize="13sp"
-                android:lineSpacingExtra="2dp" />
+                android:lineSpacingExtra="3dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Need something special? Use Custom Order below to tell us exactly what you want."
-                android:textColor="#006B4F"
-                android:textSize="12sp"
+                android:layout_marginTop="12dp"
+                android:text="SPECIAL REQUEST? Use Custom Order to tell us exactly what you want."
+                android:textColor="#F2C75C"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <!-- CATEGORY HEADING -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EXPLORE OUR COLLECTION"
+            android:textColor="#D4AF37"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp" />
 
         <!-- CATEGORIES -->
         <HorizontalScrollView
@@ -119,8 +154,8 @@
                     android:text="ALL"
                     android:textSize="11sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#C62828" />
+                    android:textColor="#002D21"
+                    android:backgroundTint="#D4AF37" />
 
                 <Button
                     android:id="@+id/category_african"
@@ -183,26 +218,44 @@
         <!-- MENU TITLE -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="12dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="OUR MENU"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OUR MENU"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Discover something delicious"
+                    android:textColor="#B8D1C5"
+                    android:textSize="11sp"
+                    android:layout_marginTop="3dp" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fresh • Tasty • Local"
-                android:textColor="@color/gold"
-                android:textSize="11sp" />
+                android:text="✦ FRESH DAILY"
+                android:textColor="#D4AF37"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -214,7 +267,8 @@
             android:nestedScrollingEnabled="false"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:paddingBottom="8dp" />
+            android:paddingBottom="12dp"
+            android:clipToPadding="false" />
 
         <!-- CUSTOM ORDER -->
         <LinearLayout
@@ -225,9 +279,10 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:padding="16dp"
-            android:background="#FFFFFF"
+            android:background="#06452F"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:elevation="3dp">
 
             <TextView
                 android:layout_width="52dp"
@@ -235,7 +290,7 @@
                 android:gravity="center"
                 android:text="🎤"
                 android:textSize="27sp"
-                android:background="#FFF3D6" />
+                android:background="#D4AF37" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -247,17 +302,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Can't find what you want?"
-                    android:textColor="#002D21"
+                    android:text="Your Cravings, Your Way!"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="4dp"
                     android:text="Create a custom request by text or voice."
-                    android:textColor="#666666"
+                    android:textColor="#D5E4DC"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -266,7 +321,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="›"
-                android:textColor="#C62828"
+                android:textColor="#D4AF37"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
@@ -284,23 +339,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="IYAADAM KITCHEN"
-                android:textColor="@color/gold"
-                android:textSize="16sp"
+                android:textColor="#D4AF37"
+                android:textSize="17sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="📍 Restaurant Address"
+                android:layout_marginTop="12dp"
+                android:text="📍 RESTAURANT ADDRESS"
                 android:textColor="#FFFFFF"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Awokoya, Ijebu Ode, Ogun State, Nigeria"
                 android:textColor="#CCCCCC"
                 android:textSize="13sp" />
@@ -309,13 +365,13 @@
                 android:id="@+id/whatsapp_btn"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="💬  WhatsApp Customer Service"
-                android:textColor="#FFFFFF"
+                android:textColor="#002D21"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:background="#006B4F"
+                android:background="#D4AF37"
                 android:clickable="true"
                 android:focusable="true" />
 
@@ -325,14 +381,20 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="+2347065214656"
-                android:textColor="@color/gold"
+                android:textColor="#D4AF37"
                 android:textSize="13sp"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:background="#315044" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:text="Home of African and Continental Dishes"
                 android:textColor="#AAAAAA"
@@ -343,8 +405,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
-                android:text="Developed by fdc: +2347065214656"
-                android:textColor="#777777"
+                android:text="Developed by FDC: +2347089364492"
+                android:textColor="#D4AF37"
                 android:textSize="10sp" />
 
         </LinearLayout>
