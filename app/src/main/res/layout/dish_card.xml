@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/white"
     android:layout_margin="8dp"
-    android:elevation="2dp">
+    android:background="#06452F"
+    android:elevation="5dp">
 
-    <!-- Dish Image -->
+    <!-- Food image -->
     <ImageView
         android:id="@+id/dish_image"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="180dp"
         android:scaleType="centerCrop"
-        android:background="@color/cream_dark" />
+        android:background="#002D21"
+        android:contentDescription="Food image" />
 
-    <!-- Info Section -->
+    <!-- Dish information -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="14dp">
 
-        <!-- Dish Name -->
         <TextView
             android:id="@+id/dish_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Dish Name"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="@color/header_green"
+            android:textColor="#FFFFFF"
             android:maxLines="1"
             android:ellipsize="end" />
 
-        <!-- Description -->
         <TextView
             android:id="@+id/dish_description"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delicious description"
+            android:text="Delicious freshly prepared meal"
             android:textSize="12sp"
-            android:textColor="@color/black"
-            android:maxLines="1"
+            android:textColor="#D5E4DC"
+            android:maxLines="2"
             android:ellipsize="end"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="5dp" />
 
-        <!-- Rating & Prep Time -->
+        <!-- Rating and preparation time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="8dp">
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="12dp">
 
             <TextView
                 android:id="@+id/rating"
@@ -61,7 +62,7 @@
                 android:layout_weight="1"
                 android:text="4.5 ⭐ (42)"
                 android:textSize="11sp"
-                android:textColor="@color/header_green" />
+                android:textColor="#F2C75C" />
 
             <TextView
                 android:id="@+id/prep_time"
@@ -69,13 +70,13 @@
                 android:layout_height="wrap_content"
                 android:text="20 mins"
                 android:textSize="11sp"
-                android:textColor="@color/black"
+                android:textColor="#FFFFFF"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp" />
+                android:paddingEnd="4dp" />
 
         </LinearLayout>
 
-        <!-- Price & Button -->
+        <!-- Price and cart button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,19 +89,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="₦2,500"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/alert_red" />
+                android:textColor="#F2C75C" />
 
             <Button
                 android:id="@+id/btn_add_to_cart"
-                android:layout_width="70dp"
-                android:layout_height="36dp"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
                 android:text="+ Add"
-                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:background="@color/gold"
-                android:textColor="@color/header_green"
+                android:backgroundTint="#D4AF37"
+                android:textColor="#002D21"
                 android:padding="4dp" />
 
         </LinearLayout>
