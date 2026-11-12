@@ -3,19 +3,21 @@ package com.iyaadam.app;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +30,10 @@ public class DishAdapter
     private final OnDishClickListener listener;
 
     private final ExecutorService imageExecutor =
-            Executors.newCachedThreadPool();
+            Executors.newFixedThreadPool(4);
+
+    private final int placeholder =
+            android.R.drawable.ic_menu_gallery;
 
     public interface OnDishClickListener {
 
@@ -79,7 +84,7 @@ public class DishAdapter
         );
 
         holder.dishDescription.setText(
-                dish.description
+                dish.description == null ? "" : dish.description
         );
 
         holder.prepTime.setText(
@@ -88,17 +93,11 @@ public class DishAdapter
 
         holder.rating.setText(
                 String.format(
+                        java.util.Locale.getDefault(),
                         "%.1f ⭐ (%d)",
                         dish.rating,
                         dish.reviewCount
                 )
-        );
-
-        /*
-         * Clear old image immediately.
-         */
-        holder.dishImage.setImageResource(
-                android.R.drawable.ic_menu_gallery
         );
 
         loadImage(
@@ -140,88 +139,89 @@ public class DishAdapter
             String imageSource
     ) {
 
+        // Remember which dish image this ImageView belongs to.
+        imageView.setTag(imageSource);
+
+        imageView.setImageResource(placeholder);
+
         if (imageSource == null ||
                 imageSource.trim().isEmpty()) {
-
             return;
         }
 
-        /*
-         * Website image.
-         */
-        if (
-                imageSource.startsWith("http://") ||
-                imageSource.startsWith("https://")
-        ) {
+        String source = imageSource.trim();
+
+        // Load website images in the background.
+        if (source.startsWith("http://") ||
+                source.startsWith("https://")) {
 
             imageExecutor.execute(() -> {
 
                 Bitmap bitmap = null;
 
+                HttpURLConnection connection = null;
+                InputStream input = null;
+
                 try {
 
-                    URL url =
-                            new URL(imageSource);
+                    URL url = new URL(source);
 
-                    HttpURLConnection connection =
-                            (HttpURLConnection)
-                                    url.openConnection();
+                    connection =
+                            (HttpURLConnection) url.openConnection();
 
-                    connection.setConnectTimeout(10000);
-                    connection.setReadTimeout(10000);
+                    connection.setConnectTimeout(12000);
+                    connection.setReadTimeout(12000);
+                    connection.setRequestMethod("GET");
                     connection.setDoInput(true);
 
                     connection.connect();
 
-                    if (
-                            connection.getResponseCode()
-                                    == HttpURLConnection.HTTP_OK
-                    ) {
+                    if (connection.getResponseCode()
+                            == HttpURLConnection.HTTP_OK) {
 
-                        InputStream input =
-                                connection.getInputStream();
+                        input = connection.getInputStream();
 
-                        bitmap =
-                                BitmapFactory.decodeStream(
-                                        input
-                                );
-
-                        input.close();
+                        bitmap = BitmapFactory.decodeStream(input);
                     }
 
-                    connection.disconnect();
-
                 } catch (Exception ignored) {
+
+                } finally {
+
+                    try {
+                        if (input != null) {
+                            input.close();
+                        }
+                    } catch (Exception ignored) {
+                    }
+
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
                 }
 
                 Bitmap finalBitmap = bitmap;
 
                 imageView.post(() -> {
 
+                    // Prevent an old download from replacing
+                    // the image of a recycled dish card.
+                    Object currentTag = imageView.getTag();
+
+                    if (!source.equals(currentTag)) {
+                        return;
+                    }
+
                     if (finalBitmap != null) {
 
-                        imageView.setImageBitmap(
-                                finalBitmap
-                        );
+                        imageView.setImageBitmap(finalBitmap);
 
                     } else {
 
-                        /*
-                         * Old database images such as:
-                         *
-                         * .../images8
-                         *
-                         * can still fall back to
-                         * Android drawables.
-                         */
-                        String name =
-                                imageSource.substring(
-                                        imageSource.lastIndexOf("/") + 1
-                                );
-
+                        // Try a matching local drawable filename.
                         loadLocalDrawable(
                                 imageView,
-                                name
+                                getImageFileName(source)
                         );
                     }
                 });
@@ -229,14 +229,62 @@ public class DishAdapter
 
         } else {
 
-            /*
-             * Local Android drawable.
-             */
+            // Load an image already stored in drawable.
             loadLocalDrawable(
                     imageView,
-                    imageSource
+                    source
             );
         }
+    }
+
+    private String getImageFileName(String source) {
+
+        try {
+
+            String name = Uri.parse(source).getLastPathSegment();
+
+            if (name == null || name.trim().isEmpty()) {
+                return "";
+            }
+
+            name = URLDecoder.decode(
+                    name,
+                    StandardCharsets.UTF_8.name()
+            );
+
+            return removeImageExtension(name);
+
+        } catch (Exception e) {
+
+            return "";
+        }
+    }
+
+    private String removeImageExtension(String name) {
+
+        if (name == null) {
+            return "";
+        }
+
+        name = name.trim();
+
+        int dot = name.lastIndexOf(".");
+
+        if (dot > 0) {
+
+            String extension =
+                    name.substring(dot).toLowerCase();
+
+            if (extension.equals(".jpeg") ||
+                    extension.equals(".jpg") ||
+                    extension.equals(".png") ||
+                    extension.equals(".webp")) {
+
+                name = name.substring(0, dot);
+            }
+        }
+
+        return name;
     }
 
     private void loadLocalDrawable(
@@ -244,35 +292,51 @@ public class DishAdapter
             String resourceName
     ) {
 
-        try {
+        if (resourceName == null ||
+                resourceName.trim().isEmpty()) {
 
-            int resId =
-                    context.getResources()
-                            .getIdentifier(
-                                    resourceName,
-                                    "drawable",
-                                    context.getPackageName()
-                            );
-
-            if (resId != 0) {
-
-                imageView.setImageResource(
-                        resId
-                );
-
-            } else {
-
-                imageView.setImageResource(
-                        android.R.drawable.ic_menu_gallery
-                );
-            }
-
-        } catch (Exception e) {
-
-            imageView.setImageResource(
-                    android.R.drawable.ic_menu_gallery
-            );
+            imageView.setImageResource(placeholder);
+            return;
         }
+
+        String name = resourceName.trim();
+
+        // Support values such as @drawable/egusi_soup.jpeg
+        if (name.startsWith("@drawable/")) {
+            name = name.substring("@drawable/".length());
+        }
+
+        // Support values containing a folder path.
+        if (name.contains("/")) {
+            name = name.substring(name.lastIndexOf("/") + 1);
+        }
+
+        name = removeImageExtension(name);
+
+        int resId = context.getResources().getIdentifier(
+                name,
+                "drawable",
+                context.getPackageName()
+        );
+
+        if (resId != 0) {
+
+            imageView.setImageResource(resId);
+
+        } else {
+
+            imageView.setImageResource(placeholder);
+        }
+    }
+
+    @Override
+    public void onViewRecycled(DishViewHolder holder) {
+
+        super.onViewRecycled(holder);
+
+        // Invalidate any pending image download for this card.
+        holder.dishImage.setTag(null);
+        holder.dishImage.setImageResource(placeholder);
     }
 
     public static class DishViewHolder
@@ -292,40 +356,33 @@ public class DishAdapter
 
             super(itemView);
 
-            dishImage =
-                    itemView.findViewById(
-                            R.id.dish_image
-                    );
+            dishImage = itemView.findViewById(
+                    R.id.dish_image
+            );
 
-            dishName =
-                    itemView.findViewById(
-                            R.id.dish_name
-                    );
+            dishName = itemView.findViewById(
+                    R.id.dish_name
+            );
 
-            dishPrice =
-                    itemView.findViewById(
-                            R.id.dish_price
-                    );
+            dishPrice = itemView.findViewById(
+                    R.id.dish_price
+            );
 
-            dishDescription =
-                    itemView.findViewById(
-                            R.id.dish_description
-                    );
+            dishDescription = itemView.findViewById(
+                    R.id.dish_description
+            );
 
-            prepTime =
-                    itemView.findViewById(
-                            R.id.prep_time
-                    );
+            prepTime = itemView.findViewById(
+                    R.id.prep_time
+            );
 
-            rating =
-                    itemView.findViewById(
-                            R.id.rating
-                    );
+            rating = itemView.findViewById(
+                    R.id.rating
+            );
 
-            addToCartBtn =
-                    itemView.findViewById(
-                            R.id.btn_add_to_cart
-                    );
+            addToCartBtn = itemView.findViewById(
+                    R.id.btn_add_to_cart
+            );
         }
     }
 }
