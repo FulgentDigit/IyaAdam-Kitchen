@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
@@ -224,12 +225,17 @@
                     android:id="@+id/account_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="55dp"
                     android:text="5258217689"
                     android:textStyle="bold"
-                    android:textColor="#8A5A00"
-                    android:textSize="25sp"
-                    android:letterSpacing="0.05"
-                    android:paddingTop="3dp"
+                    android:textColor="#002D21"
+                    android:textSize="28sp"
+                    android:fontFamily="monospace"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="true"
+                    android:singleLine="true"
+                    android:textIsSelectable="true"
+                    android:paddingTop="6dp"
                     android:paddingBottom="15dp" />
 
                 <View
