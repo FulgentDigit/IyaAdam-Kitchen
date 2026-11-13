@@ -86,9 +86,7 @@ public class MenuActivity extends AppCompatActivity {
                     @Override
                     public void onAddToCart(Dish dish) {
 
-                        CartManager
-                                .getInstance()
-                                .addToCart(dish);
+                        CartManager.getInstance().addToCart(dish);
 
                         Toast.makeText(
                                 MenuActivity.this,
@@ -178,159 +176,138 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     /*
-     * Maps menu dishes to real drawable filenames.
+     * Maps each dish to an image already included
+     * in app/src/main/res/drawable/.
      */
     private String getLocalDishImage(String dishName) {
 
         if (dishName == null) {
-            return "";
+            return "amarla_with_ewedu";
         }
 
         String name = dishName.toLowerCase(Locale.ROOT);
 
-        if (name.contains("ewedu") || name.contains("amala")) {
+        if (name.contains("ewedu") ||
+                name.contains("amala") ||
+                name.contains("fufu")) {
+
             return "amarla_with_ewedu";
         }
 
-        if (name.contains("pounded yam") &&
-                name.contains("chicken")) {
-            return "pounded_yam_chicken";
-        }
-
         if (name.contains("pounded yam")) {
-            return "pounded_yam_with_egusi_soup";
-        }
 
-        if (name.contains("goat") &&
-                name.contains("pepper soup")) {
-            return "goat_meat_pepper_soup";
+            if (name.contains("fish")) {
+                return "pounded_yam_and_dry_fish";
+            }
+
+            return "pounded_yam_with_egusi_soup";
         }
 
         if (name.contains("chicken") &&
                 name.contains("pepper soup")) {
+
             return "chicken_pepper_soup";
         }
 
-        if (name.contains("pepper soup")) {
+        if (name.contains("chicken")) {
+            return "chicken_pepper_soup";
+        }
+
+        if (name.contains("goat") ||
+                name.contains("suya") ||
+                name.contains("pepper soup")) {
+
             return "goat_meat_pepper_soup";
         }
 
         if (name.contains("egusi")) {
-            return "egusi_soup";
+            return "egusi_soup_with_assorted_meat_and_fish";
         }
 
-        if (name.contains("rice") &&
-                name.contains("vegetable")) {
+        if (name.contains("vegetable") &&
+                name.contains("rice")) {
+
             return "vegetable_rice_with_boiled_eggs";
         }
 
-        if (name.contains("rice") &&
-                name.contains("egg")) {
+        if (name.contains("rice")) {
             return "rice_and_egg";
         }
 
-        return "";
+        return "egusi_soup";
     }
 
+    /*
+     * Adds the local menu with a valid drawable name
+     * for every dish.
+     */
     private void loadLocalMenu() {
 
         allDishes.clear();
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "fufu_ewedu",
                 "Fufu & Ewedu",
                 2500,
                 "Freshly prepared fufu served with delicious ewedu soup.",
-                "amarla_with_ewedu",
-                4.8,
-                125,
-                25,
-                true
-        ));
+                4.8, 125, 25
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "pounded_yam",
                 "Pounded Yam",
                 2500,
                 "Smooth traditional pounded yam served with Nigerian soup.",
-                "pounded_yam_with_egusi_soup",
-                4.7,
-                98,
-                25,
-                true
-        ));
+                4.7, 98, 25
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "jollof_chicken",
                 "Jollof Rice & Chicken",
                 3000,
                 "Delicious Nigerian party-style jollof rice with chicken.",
-                "",
-                4.9,
-                210,
-                30,
-                true
-        ));
+                4.9, 210, 30
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "fried_rice",
                 "Fried Rice & Chicken",
                 3000,
                 "Special fried rice served with tasty chicken.",
-                "",
-                4.7,
-                145,
-                30,
-                true
-        ));
+                4.7, 145, 30
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "white_rice",
                 "White Rice & Stew",
                 2500,
                 "Steamed white rice served with rich Nigerian stew.",
-                "",
-                4.6,
-                87,
-                25,
-                true
-        ));
+                4.6, 87, 25
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "pepper_soup",
                 "Pepper Soup",
                 2500,
                 "Hot and spicy Nigerian pepper soup.",
-                "goat_meat_pepper_soup",
-                4.8,
-                76,
-                20,
-                true
-        ));
+                4.8, 76, 20
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "grilled_chicken",
                 "Grilled Chicken",
                 3500,
                 "Well-seasoned and perfectly grilled chicken.",
-                "",
-                4.9,
-                112,
-                35,
-                true
-        ));
+                4.9, 112, 35
+        );
 
-        allDishes.add(new Dish(
+        addLocalDish(
                 "beef_suya",
                 "Beef Suya",
                 2500,
                 "Spicy Nigerian-style grilled beef suya.",
-                "",
-                4.8,
-                134,
-                20,
-                true
-        ));
+                4.8, 134, 20
+        );
 
         displayedDishes.clear();
         displayedDishes.addAll(allDishes);
@@ -338,6 +315,35 @@ public class MenuActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    private void addLocalDish(
+            String id,
+            String name,
+            int price,
+            String description,
+            double rating,
+            int reviews,
+            int prepTime
+    ) {
+
+        String imageName = getLocalDishImage(name);
+
+        allDishes.add(new Dish(
+                id,
+                name,
+                price,
+                description,
+                imageName,
+                rating,
+                reviews,
+                prepTime,
+                true
+        ));
+    }
+
+    /*
+     * Loads menu details from the server.
+     * Images remain local drawable resources.
+     */
     private void loadMenuFromServer() {
 
         executor.execute(() -> {
@@ -408,34 +414,42 @@ public class MenuActivity extends AppCompatActivity {
                             item.optString("id", String.valueOf(i))
                     );
 
-                    String name = item.optString("name", "Dish");
+                    String name = item.optString(
+                            "name",
+                            "Dish"
+                    );
 
                     String description = item.optString(
                             "description",
                             ""
                     );
 
-                    double priceValue = item.optDouble("price", 0);
-
-                    int price = (int) priceValue;
-
-                    String imageUrl = item.optString(
-                            "image_url",
-                            ""
+                    int price = (int) item.optDouble(
+                            "price",
+                            0
                     );
 
-                    if (imageUrl == null ||
-                            imageUrl.trim().isEmpty() ||
-                            imageUrl.equalsIgnoreCase("null")) {
+                    /*
+                     * Always use a local drawable name.
+                     * Do not pass image_url to the current
+                     * local-resource DishAdapter.
+                     */
+                    String imageName = getLocalDishImage(name);
 
-                        imageUrl = getLocalDishImage(name);
-                    }
+                    double rating = item.optDouble(
+                            "rating",
+                            4.8
+                    );
 
-                    double rating = item.optDouble("rating", 4.8);
+                    int reviewCount = item.optInt(
+                            "review_count",
+                            0
+                    );
 
-                    int reviewCount = item.optInt("review_count", 0);
-
-                    int prepTime = item.optInt("prep_time", 30);
+                    int prepTime = item.optInt(
+                            "prep_time",
+                            30
+                    );
 
                     boolean available =
                             item.optInt("available", 1) == 1;
@@ -449,7 +463,7 @@ public class MenuActivity extends AppCompatActivity {
                             name,
                             price,
                             description,
-                            imageUrl,
+                            imageName,
                             rating,
                             reviewCount,
                             prepTime,
@@ -484,6 +498,9 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
+    /*
+     * Category filtering.
+     */
     private void showCategory(String category) {
 
         displayedDishes.clear();
@@ -515,7 +532,10 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private boolean matchesCategory(Dish dish, String category) {
+    private boolean matchesCategory(
+            Dish dish,
+            String category
+    ) {
 
         String name = dish.name == null
                 ? ""
@@ -574,6 +594,9 @@ public class MenuActivity extends AppCompatActivity {
         return true;
     }
 
+    /*
+     * WhatsApp ordering.
+     */
     private void openWhatsApp() {
 
         String message =
@@ -605,7 +628,9 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
+
         executor.shutdownNow();
     }
 }
