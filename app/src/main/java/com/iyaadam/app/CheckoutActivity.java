@@ -1,5 +1,9 @@
+
 package com.iyaadam.app;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,7 +52,10 @@ public class CheckoutActivity extends AppCompatActivity {
     private EditText nameInput;
     private EditText phoneInput;
     private EditText addressInput;
+
     private Button payBtn;
+    private Button copyAccountBtn;
+
     private ImageView backBtn;
 
     private final ExecutorService executor =
@@ -60,12 +67,15 @@ public class CheckoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_checkout);
 
         backBtn = findViewById(R.id.back_btn);
+
         nameInput = findViewById(R.id.name_input);
         phoneInput = findViewById(R.id.phone_input);
         addressInput = findViewById(R.id.address_input);
+
         payBtn = findViewById(R.id.pay_btn);
 
         // Display bank transfer details.
@@ -82,9 +92,48 @@ public class CheckoutActivity extends AppCompatActivity {
                 .setText("Please transfer the exact order amount "
                         + "to the account above.");
 
+        // COPY ACCOUNT NUMBER BUTTON.
+        copyAccountBtn = findViewById(
+                R.id.btn_copy_account_number
+        );
+
+        copyAccountBtn.setOnClickListener(v -> copyAccountNumber());
+
         backBtn.setOnClickListener(v -> finish());
 
         payBtn.setOnClickListener(v -> submitOrder());
+    }
+
+    private void copyAccountNumber() {
+
+        ClipboardManager clipboard =
+                (ClipboardManager) getSystemService(
+                        Context.CLIPBOARD_SERVICE
+                );
+
+        if (clipboard != null) {
+
+            ClipData clip = ClipData.newPlainText(
+                    "IyaAdam Kitchen Account Number",
+                    ACCOUNT_NUMBER
+            );
+
+            clipboard.setPrimaryClip(clip);
+
+            Toast.makeText(
+                    this,
+                    "Account number copied successfully!",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } else {
+
+            Toast.makeText(
+                    this,
+                    "Unable to copy account number.",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
     private void submitOrder() {
@@ -115,8 +164,11 @@ public class CheckoutActivity extends AppCompatActivity {
                 CartManager.getInstance().getCartItems();
 
         if (cartItems == null || cartItems.isEmpty()) {
-            Toast.makeText(this, "Your cart is empty",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this,
+                    "Your cart is empty",
+                    Toast.LENGTH_SHORT
+            ).show();
             return;
         }
 
@@ -126,6 +178,7 @@ public class CheckoutActivity extends AppCompatActivity {
         executor.execute(() -> {
 
             try {
+
                 JSONObject order = new JSONObject();
 
                 order.put("customer_name", name);
@@ -170,7 +223,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     mainHandler.post(() -> {
 
-                        // Prepare WhatsApp message before clearing cart.
                         String whatsappMessage =
                                 buildWhatsAppMessage(
                                         name,
@@ -192,7 +244,6 @@ public class CheckoutActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG
                         ).show();
 
-                        // Open WhatsApp with the complete order.
                         openWhatsApp(whatsappMessage);
 
                         finish();
@@ -279,6 +330,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }
 
         message.append("\n------------------------\n");
+
         message.append("ORDER TOTAL: ₦")
                 .append(formatPrice(total))
                 .append("\n");
