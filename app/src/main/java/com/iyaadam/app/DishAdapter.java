@@ -1,3 +1,4 @@
+
 package com.iyaadam.app;
 
 import android.content.Context;
@@ -19,6 +20,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,7 +49,6 @@ public class DishAdapter
             List<Dish> dishes,
             OnDishClickListener listener
     ) {
-
         this.context = context;
         this.dishes = dishes;
         this.listener = listener;
@@ -58,7 +59,6 @@ public class DishAdapter
             ViewGroup parent,
             int viewType
     ) {
-
         View view = LayoutInflater.from(context).inflate(
                 R.layout.dish_card,
                 parent,
@@ -94,32 +94,25 @@ public class DishAdapter
 
         holder.rating.setText(
                 String.format(
-                        java.util.Locale.getDefault(),
+                        Locale.getDefault(),
                         "%.1f ⭐ (%d)",
                         dish.rating,
                         dish.reviewCount
                 )
         );
 
-        loadImage(
-                holder.dishImage,
-                dish.imageUrl
-        );
+        loadImage(holder.dishImage, dish.imageUrl);
 
         holder.itemView.setOnClickListener(v -> {
-
             if (listener != null) {
                 listener.onDishClick(dish);
             }
-
         });
 
         holder.addToCartBtn.setOnClickListener(v -> {
-
             if (listener != null) {
                 listener.onAddToCart(dish);
             }
-
         });
     }
 
@@ -137,6 +130,11 @@ public class DishAdapter
         return String.valueOf(price);
     }
 
+    /*
+     * Loads the local drawable first.
+     * Then attempts to load the online image.
+     * If the online image fails, the local image remains.
+     */
     private void loadImage(
             ImageView imageView,
             String imageSource
@@ -152,9 +150,25 @@ public class DishAdapter
 
         String source = imageSource.trim();
 
-        if (source.startsWith("https://") ||
-                source.startsWith("http://")) {
+        boolean isRemote =
+                source.startsWith("https://") ||
+                source.startsWith("http://");
 
+        if (isRemote) {
+
+            // Immediately show the matching local drawable.
+            String localName = getImageFileName(source);
+
+            boolean localFound = loadLocalDrawable(
+                    imageView,
+                    localName
+            );
+
+            if (!localFound) {
+                imageView.setImageResource(placeholder);
+            }
+
+            // Then try loading the online image.
             imageExecutor.execute(() -> {
 
                 Bitmap bitmap = null;
@@ -166,17 +180,19 @@ public class DishAdapter
 
                     URL url = new URL(source);
 
-                    connection =
-                            (HttpURLConnection) url.openConnection();
+                    connection = (HttpURLConnection)
+                            url.openConnection();
 
                     connection.setConnectTimeout(15000);
                     connection.setReadTimeout(15000);
                     connection.setRequestMethod("GET");
+
                     connection.setRequestProperty(
                             "User-Agent",
                             "Mozilla/5.0"
                     );
 
+                    connection.setInstanceFollowRedirects(true);
                     connection.connect();
 
                     if (connection.getResponseCode() == 200) {
@@ -206,31 +222,24 @@ public class DishAdapter
 
                 imageView.post(() -> {
 
-                    if (!source.equals(imageView.getTag())) {
+                    // Prevent images appearing in the wrong dish card.
+                    Object currentTag = imageView.getTag();
+
+                    if (currentTag == null ||
+                            !source.equals(currentTag.toString())) {
                         return;
                     }
 
+                    // Replace local image only when online loading succeeds.
                     if (result != null) {
-
                         imageView.setImageBitmap(result);
-
-                    } else {
-
-                        loadLocalDrawable(
-                                imageView,
-                                getImageFileName(source)
-                        );
                     }
                 });
-
             });
 
         } else {
 
-            loadLocalDrawable(
-                    imageView,
-                    source
-            );
+            loadLocalDrawable(imageView, source);
         }
     }
 
@@ -253,7 +262,6 @@ public class DishAdapter
             return removeImageExtension(name);
 
         } catch (Exception e) {
-
             return "";
         }
     }
@@ -271,7 +279,7 @@ public class DishAdapter
         if (dot > 0) {
 
             String extension =
-                    name.substring(dot).toLowerCase();
+                    name.substring(dot).toLowerCase(Locale.ROOT);
 
             if (extension.equals(".jpeg") ||
                     extension.equals(".jpg") ||
@@ -285,7 +293,10 @@ public class DishAdapter
         return name;
     }
 
-    private void loadLocalDrawable(
+    /*
+     * Returns true when the drawable exists.
+     */
+    private boolean loadLocalDrawable(
             ImageView imageView,
             String resourceName
     ) {
@@ -294,20 +305,16 @@ public class DishAdapter
                 resourceName.trim().isEmpty()) {
 
             imageView.setImageResource(placeholder);
-            return;
+            return false;
         }
 
         String name = resourceName.trim();
 
         if (name.startsWith("@drawable/")) {
-
-            name = name.substring(
-                    "@drawable/".length()
-            );
+            name = name.substring("@drawable/".length());
         }
 
         if (name.contains("/")) {
-
             name = name.substring(
                     name.lastIndexOf("/") + 1
             );
@@ -315,20 +322,21 @@ public class DishAdapter
 
         name = removeImageExtension(name);
 
-        int resourceId = context.getResources()
-                .getIdentifier(
-                        name,
-                        "drawable",
-                        context.getPackageName()
-                );
+        int resourceId = context.getResources().getIdentifier(
+                name,
+                "drawable",
+                context.getPackageName()
+        );
 
         if (resourceId != 0) {
 
             imageView.setImageResource(resourceId);
+            return true;
 
         } else {
 
             imageView.setImageResource(placeholder);
+            return false;
         }
     }
 
@@ -338,7 +346,6 @@ public class DishAdapter
         super.onViewRecycled(holder);
 
         holder.dishImage.setTag(null);
-
         holder.dishImage.setImageResource(placeholder);
     }
 
