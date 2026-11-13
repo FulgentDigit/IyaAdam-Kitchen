@@ -24,47 +24,59 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         dishesRecycler = findViewById(R.id.dishes_recycler);
-        dishesRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        dishesRecycler.setLayoutManager(
+                new GridLayoutManager(this, 2)
+        );
 
         dishes = createSampleDishes();
 
         adapter = new DishAdapter(this, dishes, this);
         dishesRecycler.setAdapter(adapter);
 
+        // MENU / SEARCH
         findViewById(R.id.ic_search).setOnClickListener(v ->
-                openMenu());
+                openMenu()
+        );
 
-        findViewById(R.id.btn_order_now).setOnClickListener(v ->
-                openMenu());
-
-        findViewById(R.id.btn_view_all).setOnClickListener(v ->
-                openMenu());
-
+        // CART
         findViewById(R.id.ic_cart_nav).setOnClickListener(v ->
-                startActivity(new Intent(this, CartActivity.class)));
+                startActivity(new Intent(
+                        MainActivity.this,
+                        CartActivity.class
+                ))
+        );
 
-        findViewById(R.id.ic_cart_header).setOnClickListener(v ->
-                startActivity(new Intent(this, CartActivity.class)));
-
+        // PROFILE
         findViewById(R.id.ic_person).setOnClickListener(v ->
-                startActivity(new Intent(this, ProfileActivity.class)));
+                startActivity(new Intent(
+                        MainActivity.this,
+                        ProfileActivity.class
+                ))
+        );
 
+        // MUSIC
         findViewById(R.id.ic_orders).setOnClickListener(v ->
-                startActivity(new Intent(this, MusicPlayerActivity.class)));
+                startActivity(new Intent(
+                        MainActivity.this,
+                        MusicPlayerActivity.class
+                ))
+        );
 
+        // HOME
         findViewById(R.id.ic_home).setOnClickListener(v ->
-                Toast.makeText(this,
+                Toast.makeText(
+                        this,
                         "Welcome to IyaAdam Kitchen!",
-                        Toast.LENGTH_SHORT).show());
-
-        findViewById(R.id.ic_notification).setOnClickListener(v ->
-                Toast.makeText(this,
-                        "No new notifications",
-                        Toast.LENGTH_SHORT).show());
+                        Toast.LENGTH_SHORT
+                ).show()
+        );
     }
 
     private void openMenu() {
-        Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+        Intent intent = new Intent(
+                MainActivity.this,
+                MenuActivity.class
+        );
         startActivity(intent);
     }
 
@@ -81,7 +93,8 @@ public class MainActivity extends AppCompatActivity
                 4.7,
                 152,
                 20,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "2",
@@ -92,7 +105,8 @@ public class MainActivity extends AppCompatActivity
                 4.8,
                 198,
                 25,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "3",
@@ -103,7 +117,8 @@ public class MainActivity extends AppCompatActivity
                 4.6,
                 87,
                 30,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "4",
@@ -114,7 +129,8 @@ public class MainActivity extends AppCompatActivity
                 4.5,
                 124,
                 15,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "5",
@@ -125,7 +141,8 @@ public class MainActivity extends AppCompatActivity
                 4.4,
                 76,
                 20,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "6",
@@ -136,7 +153,8 @@ public class MainActivity extends AppCompatActivity
                 4.3,
                 95,
                 15,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "7",
@@ -147,7 +165,8 @@ public class MainActivity extends AppCompatActivity
                 4.9,
                 213,
                 25,
-                true));
+                true
+        ));
 
         list.add(new Dish(
                 "8",
@@ -158,13 +177,15 @@ public class MainActivity extends AppCompatActivity
                 4.2,
                 64,
                 18,
-                true));
+                true
+        ));
 
         return list;
     }
 
     @Override
     public void onDishClick(Dish dish) {
+
         CartManager.getInstance().addToCart(dish);
 
         Toast.makeText(
@@ -176,6 +197,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAddToCart(Dish dish) {
+
         CartManager.getInstance().addToCart(dish);
 
         Toast.makeText(
