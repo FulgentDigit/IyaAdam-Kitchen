@@ -1,9 +1,6 @@
-
 package com.iyaadam.app;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +11,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class DishAdapter
         extends RecyclerView.Adapter<DishAdapter.DishViewHolder> {
@@ -30,9 +20,6 @@ public class DishAdapter
     private final Context context;
     private final List<Dish> dishes;
     private final OnDishClickListener listener;
-
-    private final ExecutorService imageExecutor =
-            Executors.newFixedThreadPool(4);
 
     private final int placeholder =
             android.R.drawable.ic_menu_gallery;
@@ -101,7 +88,11 @@ public class DishAdapter
                 )
         );
 
-        loadImage(holder.dishImage, dish.imageUrl);
+        loadImage(
+                holder.dishImage,
+                dish.imageUrl,
+                dish.name
+        );
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -131,213 +122,175 @@ public class DishAdapter
     }
 
     /*
-     * Loads the local drawable first.
-     * Then attempts to load the online image.
-     * If the online image fails, the local image remains.
+     * LOCAL DRAWABLE IMAGE LOADING ONLY.
+     * No server downloads or internet image requests.
      */
     private void loadImage(
             ImageView imageView,
-            String imageSource
+            String imageSource,
+            String dishName
     ) {
 
-        imageView.setTag(imageSource);
         imageView.setImageResource(placeholder);
 
-        if (imageSource == null ||
-                imageSource.trim().isEmpty()) {
-            return;
+        // First try the drawable name supplied for the dish.
+        String drawableName = getSourceDrawableName(imageSource);
+
+        int resourceId = findDrawable(drawableName);
+
+        // If the supplied name does not exist,
+        // use the dish name to find its local drawable.
+        if (resourceId == 0) {
+            drawableName = getDishDrawableName(dishName);
+            resourceId = findDrawable(drawableName);
         }
 
-        String source = imageSource.trim();
-
-        boolean isRemote =
-                source.startsWith("https://") ||
-                source.startsWith("http://");
-
-        if (isRemote) {
-
-            // Immediately show the matching local drawable.
-            String localName = getImageFileName(source);
-
-            boolean localFound = loadLocalDrawable(
-                    imageView,
-                    localName
-            );
-
-            if (!localFound) {
-                imageView.setImageResource(placeholder);
-            }
-
-            // Then try loading the online image.
-            imageExecutor.execute(() -> {
-
-                Bitmap bitmap = null;
-
-                HttpURLConnection connection = null;
-                InputStream input = null;
-
-                try {
-
-                    URL url = new URL(source);
-
-                    connection = (HttpURLConnection)
-                            url.openConnection();
-
-                    connection.setConnectTimeout(15000);
-                    connection.setReadTimeout(15000);
-                    connection.setRequestMethod("GET");
-
-                    connection.setRequestProperty(
-                            "User-Agent",
-                            "Mozilla/5.0"
-                    );
-
-                    connection.setInstanceFollowRedirects(true);
-                    connection.connect();
-
-                    if (connection.getResponseCode() == 200) {
-
-                        input = connection.getInputStream();
-
-                        bitmap = BitmapFactory.decodeStream(input);
-                    }
-
-                } catch (Exception ignored) {
-
-                } finally {
-
-                    try {
-                        if (input != null) {
-                            input.close();
-                        }
-                    } catch (Exception ignored) {
-                    }
-
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }
-
-                Bitmap result = bitmap;
-
-                imageView.post(() -> {
-
-                    // Prevent images appearing in the wrong dish card.
-                    Object currentTag = imageView.getTag();
-
-                    if (currentTag == null ||
-                            !source.equals(currentTag.toString())) {
-                        return;
-                    }
-
-                    // Replace local image only when online loading succeeds.
-                    if (result != null) {
-                        imageView.setImageBitmap(result);
-                    }
-                });
-            });
-
-        } else {
-
-            loadLocalDrawable(imageView, source);
+        if (resourceId != 0) {
+            imageView.setImageResource(resourceId);
         }
-    }
-
-    private String getImageFileName(String source) {
-
-        try {
-
-            String name =
-                    Uri.parse(source).getLastPathSegment();
-
-            if (name == null || name.trim().isEmpty()) {
-                return "";
-            }
-
-            name = URLDecoder.decode(
-                    name,
-                    StandardCharsets.UTF_8.name()
-            );
-
-            return removeImageExtension(name);
-
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String removeImageExtension(String name) {
-
-        if (name == null) {
-            return "";
-        }
-
-        name = name.trim();
-
-        int dot = name.lastIndexOf(".");
-
-        if (dot > 0) {
-
-            String extension =
-                    name.substring(dot).toLowerCase(Locale.ROOT);
-
-            if (extension.equals(".jpeg") ||
-                    extension.equals(".jpg") ||
-                    extension.equals(".png") ||
-                    extension.equals(".webp")) {
-
-                name = name.substring(0, dot);
-            }
-        }
-
-        return name;
     }
 
     /*
-     * Returns true when the drawable exists.
+     * Extracts a drawable filename from either:
+     * images8
+     * @drawable/images8
+     * https://example.com/uploads/menu/images8.jpg
      */
-    private boolean loadLocalDrawable(
-            ImageView imageView,
-            String resourceName
-    ) {
+    private String getSourceDrawableName(String source) {
 
-        if (resourceName == null ||
-                resourceName.trim().isEmpty()) {
-
-            imageView.setImageResource(placeholder);
-            return false;
+        if (source == null || source.trim().isEmpty()) {
+            return "";
         }
 
-        String name = resourceName.trim();
+        String name = source.trim();
+
+        if (name.startsWith("http://") ||
+                name.startsWith("https://")) {
+
+            try {
+                String lastPart =
+                        Uri.parse(name).getLastPathSegment();
+
+                if (lastPart == null) {
+                    return "";
+                }
+
+                name = lastPart;
+
+            } catch (Exception ignored) {
+                return "";
+            }
+        }
 
         if (name.startsWith("@drawable/")) {
             name = name.substring("@drawable/".length());
         }
 
         if (name.contains("/")) {
-            name = name.substring(
-                    name.lastIndexOf("/") + 1
-            );
+            name = name.substring(name.lastIndexOf("/") + 1);
         }
 
-        name = removeImageExtension(name);
+        int dot = name.lastIndexOf(".");
 
-        int resourceId = context.getResources().getIdentifier(
-                name,
+        if (dot > 0) {
+            name = name.substring(0, dot);
+        }
+
+        return name.trim().toLowerCase(Locale.ROOT);
+    }
+
+    /*
+     * Matches dish names to drawable files already
+     * present in the Android project.
+     */
+    private String getDishDrawableName(String dishName) {
+
+        if (dishName == null) {
+            return "";
+        }
+
+        String name = dishName.toLowerCase(Locale.ROOT);
+
+        if (name.contains("amala") ||
+                name.contains("ewedu")) {
+            return "amarla_with_ewedu";
+        }
+
+        if (name.contains("pounded yam") &&
+                name.contains("egusi")) {
+            return "pounded_yam_with_egusi_soup";
+        }
+
+        if (name.contains("pounded yam") &&
+                name.contains("fish")) {
+            return "pounded_yam_with_dried_fish";
+        }
+
+        if (name.contains("pounded yam") &&
+                name.contains("chicken")) {
+            return "pounded_yam_chicken";
+        }
+
+        if (name.contains("goat meat") &&
+                (name.contains("pepper") ||
+                        name.contains("soup"))) {
+            return "goat_meat_pepper_soup";
+        }
+
+        if (name.contains("pepper soup")) {
+            return "chicken_pepper_soup";
+        }
+
+        if (name.contains("vegetable rice") ||
+                name.contains("rice and vegetable")) {
+            return "vegetable_rice_with_boiled_eggs";
+        }
+
+        if (name.contains("rice") &&
+                name.contains("egg")) {
+            return "rice_and_egg";
+        }
+
+        if (name.contains("egusi")) {
+            return "egusi_soup";
+        }
+
+        if (name.contains("fufu")) {
+            return "fufu_egusi_soup";
+        }
+
+        if (name.contains("jollof")) {
+            return "images8";
+        }
+
+        if (name.contains("moi moi") ||
+                name.contains("moi-moi")) {
+            return "images10";
+        }
+
+        if (name.contains("pasta")) {
+            return "images234";
+        }
+
+        return "";
+    }
+
+    /*
+     * Loads a drawable using the same Android resource
+     * lookup approach used by the homepage.
+     */
+    private int findDrawable(String resourceName) {
+
+        if (resourceName == null ||
+                resourceName.trim().isEmpty()) {
+            return 0;
+        }
+
+        return context.getResources().getIdentifier(
+                resourceName.trim(),
                 "drawable",
                 context.getPackageName()
         );
-
-        if (resourceId != 0) {
-
-            imageView.setImageResource(resourceId);
-            return true;
-
-        } else {
-
-            imageView.setImageResource(placeholder);
-            return false;
-        }
     }
 
     @Override
@@ -345,7 +298,6 @@ public class DishAdapter
 
         super.onViewRecycled(holder);
 
-        holder.dishImage.setTag(null);
         holder.dishImage.setImageResource(placeholder);
     }
 
