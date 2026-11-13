@@ -405,7 +405,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
-                android:text="Developed by FDC: +2347089364492"
+                android:text="Developed by FDC:  +2347089364492"
                 android:textColor="#D4AF37"
                 android:textSize="10sp" />
 
