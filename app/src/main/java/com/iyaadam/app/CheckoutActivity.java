@@ -1,4 +1,3 @@
-
 package com.iyaadam.app;
 
 import android.content.ClipData;
