@@ -47,6 +47,7 @@ public class DishAdapter
             List<Dish> dishes,
             OnDishClickListener listener
     ) {
+
         this.context = context;
         this.dishes = dishes;
         this.listener = listener;
@@ -58,13 +59,11 @@ public class DishAdapter
             int viewType
     ) {
 
-        View view = LayoutInflater
-                .from(context)
-                .inflate(
-                        R.layout.dish_card,
-                        parent,
-                        false
-                );
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.dish_card,
+                parent,
+                false
+        );
 
         return new DishViewHolder(view);
     }
@@ -84,7 +83,9 @@ public class DishAdapter
         );
 
         holder.dishDescription.setText(
-                dish.description == null ? "" : dish.description
+                dish.description == null
+                        ? ""
+                        : dish.description
         );
 
         holder.prepTime.setText(
@@ -110,6 +111,7 @@ public class DishAdapter
             if (listener != null) {
                 listener.onDishClick(dish);
             }
+
         });
 
         holder.addToCartBtn.setOnClickListener(v -> {
@@ -117,6 +119,7 @@ public class DishAdapter
             if (listener != null) {
                 listener.onAddToCart(dish);
             }
+
         });
     }
 
@@ -139,9 +142,7 @@ public class DishAdapter
             String imageSource
     ) {
 
-        // Remember which dish image this ImageView belongs to.
         imageView.setTag(imageSource);
-
         imageView.setImageResource(placeholder);
 
         if (imageSource == null ||
@@ -151,9 +152,8 @@ public class DishAdapter
 
         String source = imageSource.trim();
 
-        // Load website images in the background.
-        if (source.startsWith("http://") ||
-                source.startsWith("https://")) {
+        if (source.startsWith("https://") ||
+                source.startsWith("http://")) {
 
             imageExecutor.execute(() -> {
 
@@ -169,15 +169,17 @@ public class DishAdapter
                     connection =
                             (HttpURLConnection) url.openConnection();
 
-                    connection.setConnectTimeout(12000);
-                    connection.setReadTimeout(12000);
+                    connection.setConnectTimeout(15000);
+                    connection.setReadTimeout(15000);
                     connection.setRequestMethod("GET");
-                    connection.setDoInput(true);
+                    connection.setRequestProperty(
+                            "User-Agent",
+                            "Mozilla/5.0"
+                    );
 
                     connection.connect();
 
-                    if (connection.getResponseCode()
-                            == HttpURLConnection.HTTP_OK) {
+                    if (connection.getResponseCode() == 200) {
 
                         input = connection.getInputStream();
 
@@ -200,36 +202,31 @@ public class DishAdapter
                     }
                 }
 
-                Bitmap finalBitmap = bitmap;
+                Bitmap result = bitmap;
 
                 imageView.post(() -> {
 
-                    // Prevent an old download from replacing
-                    // the image of a recycled dish card.
-                    Object currentTag = imageView.getTag();
-
-                    if (!source.equals(currentTag)) {
+                    if (!source.equals(imageView.getTag())) {
                         return;
                     }
 
-                    if (finalBitmap != null) {
+                    if (result != null) {
 
-                        imageView.setImageBitmap(finalBitmap);
+                        imageView.setImageBitmap(result);
 
                     } else {
 
-                        // Try a matching local drawable filename.
                         loadLocalDrawable(
                                 imageView,
                                 getImageFileName(source)
                         );
                     }
                 });
+
             });
 
         } else {
 
-            // Load an image already stored in drawable.
             loadLocalDrawable(
                     imageView,
                     source
@@ -241,7 +238,8 @@ public class DishAdapter
 
         try {
 
-            String name = Uri.parse(source).getLastPathSegment();
+            String name =
+                    Uri.parse(source).getLastPathSegment();
 
             if (name == null || name.trim().isEmpty()) {
                 return "";
@@ -301,27 +299,32 @@ public class DishAdapter
 
         String name = resourceName.trim();
 
-        // Support values such as @drawable/egusi_soup.jpeg
         if (name.startsWith("@drawable/")) {
-            name = name.substring("@drawable/".length());
+
+            name = name.substring(
+                    "@drawable/".length()
+            );
         }
 
-        // Support values containing a folder path.
         if (name.contains("/")) {
-            name = name.substring(name.lastIndexOf("/") + 1);
+
+            name = name.substring(
+                    name.lastIndexOf("/") + 1
+            );
         }
 
         name = removeImageExtension(name);
 
-        int resId = context.getResources().getIdentifier(
-                name,
-                "drawable",
-                context.getPackageName()
-        );
+        int resourceId = context.getResources()
+                .getIdentifier(
+                        name,
+                        "drawable",
+                        context.getPackageName()
+                );
 
-        if (resId != 0) {
+        if (resourceId != 0) {
 
-            imageView.setImageResource(resId);
+            imageView.setImageResource(resourceId);
 
         } else {
 
@@ -334,8 +337,8 @@ public class DishAdapter
 
         super.onViewRecycled(holder);
 
-        // Invalidate any pending image download for this card.
         holder.dishImage.setTag(null);
+
         holder.dishImage.setImageResource(placeholder);
     }
 
