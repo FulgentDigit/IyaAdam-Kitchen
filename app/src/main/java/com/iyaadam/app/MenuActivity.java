@@ -1,4 +1,3 @@
-
 package com.iyaadam.app;
 
 import android.content.Intent;
@@ -23,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -177,6 +177,61 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Maps menu dishes to real drawable filenames.
+     */
+    private String getLocalDishImage(String dishName) {
+
+        if (dishName == null) {
+            return "";
+        }
+
+        String name = dishName.toLowerCase(Locale.ROOT);
+
+        if (name.contains("ewedu") || name.contains("amala")) {
+            return "amarla_with_ewedu";
+        }
+
+        if (name.contains("pounded yam") &&
+                name.contains("chicken")) {
+            return "pounded_yam_chicken";
+        }
+
+        if (name.contains("pounded yam")) {
+            return "pounded_yam_with_egusi_soup";
+        }
+
+        if (name.contains("goat") &&
+                name.contains("pepper soup")) {
+            return "goat_meat_pepper_soup";
+        }
+
+        if (name.contains("chicken") &&
+                name.contains("pepper soup")) {
+            return "chicken_pepper_soup";
+        }
+
+        if (name.contains("pepper soup")) {
+            return "goat_meat_pepper_soup";
+        }
+
+        if (name.contains("egusi")) {
+            return "egusi_soup";
+        }
+
+        if (name.contains("rice") &&
+                name.contains("vegetable")) {
+            return "vegetable_rice_with_boiled_eggs";
+        }
+
+        if (name.contains("rice") &&
+                name.contains("egg")) {
+            return "rice_and_egg";
+        }
+
+        return "";
+    }
+
     private void loadLocalMenu() {
 
         allDishes.clear();
@@ -186,7 +241,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Fufu & Ewedu",
                 2500,
                 "Freshly prepared fufu served with delicious ewedu soup.",
-                "images",
+                "amarla_with_ewedu",
                 4.8,
                 125,
                 25,
@@ -198,7 +253,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Pounded Yam",
                 2500,
                 "Smooth traditional pounded yam served with Nigerian soup.",
-                "images2",
+                "pounded_yam_with_egusi_soup",
                 4.7,
                 98,
                 25,
@@ -210,7 +265,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Jollof Rice & Chicken",
                 3000,
                 "Delicious Nigerian party-style jollof rice with chicken.",
-                "images3",
+                "",
                 4.9,
                 210,
                 30,
@@ -222,7 +277,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Fried Rice & Chicken",
                 3000,
                 "Special fried rice served with tasty chicken.",
-                "images4",
+                "",
                 4.7,
                 145,
                 30,
@@ -234,7 +289,7 @@ public class MenuActivity extends AppCompatActivity {
                 "White Rice & Stew",
                 2500,
                 "Steamed white rice served with rich Nigerian stew.",
-                "images5",
+                "",
                 4.6,
                 87,
                 25,
@@ -246,7 +301,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Pepper Soup",
                 2500,
                 "Hot and spicy Nigerian pepper soup.",
-                "images6",
+                "goat_meat_pepper_soup",
                 4.8,
                 76,
                 20,
@@ -258,7 +313,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Grilled Chicken",
                 3500,
                 "Well-seasoned and perfectly grilled chicken.",
-                "images7",
+                "",
                 4.9,
                 112,
                 35,
@@ -270,7 +325,7 @@ public class MenuActivity extends AppCompatActivity {
                 "Beef Suya",
                 2500,
                 "Spicy Nigerian-style grilled beef suya.",
-                "images8",
+                "",
                 4.8,
                 134,
                 20,
@@ -369,6 +424,13 @@ public class MenuActivity extends AppCompatActivity {
                             ""
                     );
 
+                    if (imageUrl == null ||
+                            imageUrl.trim().isEmpty() ||
+                            imageUrl.equalsIgnoreCase("null")) {
+
+                        imageUrl = getLocalDishImage(name);
+                    }
+
                     double rating = item.optDouble("rating", 4.8);
 
                     int reviewCount = item.optInt("review_count", 0);
@@ -457,42 +519,56 @@ public class MenuActivity extends AppCompatActivity {
 
         String name = dish.name == null
                 ? ""
-                : dish.name.toLowerCase();
+                : dish.name.toLowerCase(Locale.ROOT);
 
         String description = dish.description == null
                 ? ""
-                : dish.description.toLowerCase();
+                : dish.description.toLowerCase(Locale.ROOT);
 
-        String search = category.toLowerCase();
+        String search = category.toLowerCase(Locale.ROOT);
 
         if (search.equals("african")) {
-            return true;
+
+            return name.contains("fufu") ||
+                    name.contains("amala") ||
+                    name.contains("ewedu") ||
+                    name.contains("pounded yam") ||
+                    name.contains("egusi") ||
+                    name.contains("jollof") ||
+                    name.contains("suya") ||
+                    name.contains("pepper soup") ||
+                    name.contains("stew") ||
+                    description.contains("nigerian");
         }
 
         if (search.equals("rice")) {
+
             return name.contains("rice") ||
                     description.contains("rice");
         }
 
         if (search.equals("soups")) {
+
             return name.contains("soup") ||
                     description.contains("soup") ||
-                    name.contains("ewedu");
+                    name.contains("ewedu") ||
+                    name.contains("egusi");
         }
 
         if (search.equals("grills")) {
+
             return name.contains("grill") ||
-                    name.contains("suya") ||
-                    name.contains("chicken");
+                    name.contains("suya");
         }
 
         if (search.equals("continental")) {
-            return !name.contains("fufu") &&
-                    !name.contains("ewedu") &&
-                    !name.contains("pounded") &&
-                    !name.contains("suya") &&
-                    !name.contains("jollof") &&
-                    !name.contains("fried rice");
+
+            return name.contains("continental") ||
+                    name.contains("pasta") ||
+                    name.contains("pizza") ||
+                    name.contains("burger") ||
+                    name.contains("sandwich") ||
+                    name.contains("salad");
         }
 
         return true;
