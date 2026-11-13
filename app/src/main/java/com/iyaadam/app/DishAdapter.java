@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,24 +33,20 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
 
     @Override
     public DishViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.dish_card, parent, false
-        );
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.dish_card, parent, false);
         return new DishViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(DishViewHolder holder, int position) {
-
         Dish dish = dishes.get(position);
 
         holder.dishName.setText(dish.name);
         holder.dishPrice.setText("₦" + formatPrice(dish.price));
-
         holder.dishDescription.setText(
                 dish.description == null ? "" : dish.description
         );
-
         holder.prepTime.setText(dish.prepTime + " mins");
 
         holder.rating.setText(String.format(
@@ -62,7 +56,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
                 dish.reviewCount
         ));
 
-        loadLocalImage(holder.dishImage, dish.imageUrl);
+        holder.dishImage.setImageResource(getDishImage(dish.imageUrl));
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -77,103 +71,40 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
         });
     }
 
-    private void loadLocalImage(ImageView imageView, String imageName) {
+    private int getDishImage(String imageName) {
 
-        imageView.setImageResource(android.R.drawable.ic_menu_gallery);
-
-        if (imageName == null || imageName.trim().isEmpty()) {
-            return;
+        if (imageName == null) {
+            return android.R.drawable.ic_menu_gallery;
         }
 
-        List<String> candidates = new ArrayList<>();
+        switch (imageName) {
 
-        String name = imageName.trim();
+            case "amarla_with_ewedu":
+                return R.drawable.amarla_with_ewedu;
 
-        try {
-            name = URLDecoder.decode(name, "UTF-8");
-        } catch (Exception ignored) {
-        }
+            case "goat_meat_pepper_soup":
+                return R.drawable.goat_meat_pepper_soup;
 
-        // Handle drawable references.
-        if (name.startsWith("@drawable/")) {
-            name = name.substring("@drawable/".length());
-        }
+            case "egusi_soup_with_assorted_meat_and_fish":
+                return R.drawable.egusi_soup_with_assorted_meat_and_fish;
 
-        // Handle URLs and file paths.
-        if (name.contains("/")) {
-            name = name.substring(name.lastIndexOf("/") + 1);
-        }
+            case "pounded_yam_with_egusi_soup":
+                return R.drawable.pounded_yam_with_egusi_soup;
 
-        // Remove file extension.
-        int dot = name.lastIndexOf(".");
-        if (dot > 0) {
-            name = name.substring(0, dot);
-        }
+            case "chicken_pepper_soup":
+                return R.drawable.chicken_pepper_soup;
 
-        name = name.toLowerCase(Locale.ROOT)
-                .replace("-", "_")
-                .replace(" ", "_")
-                .replaceAll("[^a-z0-9_]", "")
-                .replaceAll("_+", "_");
+            case "rice_and_egg":
+                return R.drawable.rice_and_egg;
 
-        addCandidate(candidates, name);
+            case "vegetable_rice_with_boiled_eggs":
+                return R.drawable.vegetable_rice_with_boiled_eggs;
 
-        // Common filename variations.
-        if (name.equals("amarla_with_ewedu")) {
-            addCandidate(candidates, "amala_with_ewedu");
-            addCandidate(candidates, "amala_ewedu");
-        }
+            case "pounded_yam_and_dry_fish":
+                return R.drawable.pounded_yam_and_dry_fish;
 
-        if (name.equals("pounded_yam_and_dry_fish")) {
-            addCandidate(candidates, "pounded_yam_with_dried_fish");
-            addCandidate(candidates, "pounded_yam_dry_fish");
-        }
-
-        if (name.equals("egusi_soup_with_assorted_meat_and_fish")) {
-            addCandidate(candidates, "egusi_soup_assorted_meat_and_fish");
-            addCandidate(candidates, "egusi_soup");
-        }
-
-        if (name.equals("pounded_yam_with_egusi_soup")) {
-            addCandidate(candidates, "pounded_yam_egusi_soup");
-        }
-
-        if (name.equals("goat_meat_pepper_soup")) {
-            addCandidate(candidates, "goat_pepper_soup");
-        }
-
-        if (name.equals("chicken_pepper_soup")) {
-            addCandidate(candidates, "chicken_pepper_soup");
-        }
-
-        if (name.equals("rice_and_egg")) {
-            addCandidate(candidates, "rice_with_egg");
-        }
-
-        if (name.equals("vegetable_rice_with_boiled_eggs")) {
-            addCandidate(candidates, "vegetable_rice_boiled_eggs");
-            addCandidate(candidates, "vegetable_rice");
-        }
-
-        // Search Android drawable resources.
-        for (String candidate : candidates) {
-
-            int resourceId = context.getResources().getIdentifier(
-                    candidate,
-                    "drawable",
-                    context.getPackageName()
-            );
-
-            if (resourceId != 0) {
-                imageView.setImageResource(resourceId);
-                return;
-            }
-        }
-    }
-
-    private void addCandidate(List<String> candidates, String name) {
-        if (name != null && !candidates.contains(name)) {
-            candidates.add(name);
+            default:
+                return android.R.drawable.ic_menu_gallery;
         }
     }
 
@@ -187,14 +118,6 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
     @Override
     public int getItemCount() {
         return dishes.size();
-    }
-
-    @Override
-    public void onViewRecycled(DishViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.dishImage.setImageResource(
-                android.R.drawable.ic_menu_gallery
-        );
     }
 
     public static class DishViewHolder extends RecyclerView.ViewHolder {
