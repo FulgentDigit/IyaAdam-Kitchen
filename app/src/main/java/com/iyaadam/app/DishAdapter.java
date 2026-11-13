@@ -1,3 +1,4 @@
+
 package com.iyaadam.app;
 
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,13 +44,16 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
 
     @Override
     public void onBindViewHolder(DishViewHolder holder, int position) {
+
         Dish dish = dishes.get(position);
 
         holder.dishName.setText(dish.name);
         holder.dishPrice.setText("₦" + formatPrice(dish.price));
+
         holder.dishDescription.setText(
                 dish.description == null ? "" : dish.description
         );
+
         holder.prepTime.setText(dish.prepTime + " mins");
 
         holder.rating.setText(String.format(
@@ -73,26 +79,102 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
     }
 
     private void loadLocalImage(ImageView imageView, String imageName) {
+
         imageView.setImageResource(android.R.drawable.ic_menu_gallery);
 
         if (imageName == null || imageName.trim().isEmpty()) {
             return;
         }
 
+        List<String> candidates = new ArrayList<>();
+
         String name = imageName.trim();
 
+        try {
+            name = URLDecoder.decode(name, "UTF-8");
+        } catch (Exception ignored) {
+        }
+
+        // Handle drawable references.
         if (name.startsWith("@drawable/")) {
             name = name.substring("@drawable/".length());
         }
 
-        int resourceId = context.getResources().getIdentifier(
-                name,
-                "drawable",
-                context.getPackageName()
-        );
+        // Handle URLs and file paths.
+        if (name.contains("/")) {
+            name = name.substring(name.lastIndexOf("/") + 1);
+        }
 
-        if (resourceId != 0) {
-            imageView.setImageResource(resourceId);
+        // Remove file extension.
+        int dot = name.lastIndexOf(".");
+        if (dot > 0) {
+            name = name.substring(0, dot);
+        }
+
+        name = name.toLowerCase(Locale.ROOT)
+                .replace("-", "_")
+                .replace(" ", "_")
+                .replaceAll("[^a-z0-9_]", "")
+                .replaceAll("_+", "_");
+
+        addCandidate(candidates, name);
+
+        // Common filename variations.
+        if (name.equals("amarla_with_ewedu")) {
+            addCandidate(candidates, "amala_with_ewedu");
+            addCandidate(candidates, "amala_ewedu");
+        }
+
+        if (name.equals("pounded_yam_and_dry_fish")) {
+            addCandidate(candidates, "pounded_yam_with_dried_fish");
+            addCandidate(candidates, "pounded_yam_dry_fish");
+        }
+
+        if (name.equals("egusi_soup_with_assorted_meat_and_fish")) {
+            addCandidate(candidates, "egusi_soup_assorted_meat_and_fish");
+            addCandidate(candidates, "egusi_soup");
+        }
+
+        if (name.equals("pounded_yam_with_egusi_soup")) {
+            addCandidate(candidates, "pounded_yam_egusi_soup");
+        }
+
+        if (name.equals("goat_meat_pepper_soup")) {
+            addCandidate(candidates, "goat_pepper_soup");
+        }
+
+        if (name.equals("chicken_pepper_soup")) {
+            addCandidate(candidates, "chicken_pepper_soup");
+        }
+
+        if (name.equals("rice_and_egg")) {
+            addCandidate(candidates, "rice_with_egg");
+        }
+
+        if (name.equals("vegetable_rice_with_boiled_eggs")) {
+            addCandidate(candidates, "vegetable_rice_boiled_eggs");
+            addCandidate(candidates, "vegetable_rice");
+        }
+
+        // Search Android drawable resources.
+        for (String candidate : candidates) {
+
+            int resourceId = context.getResources().getIdentifier(
+                    candidate,
+                    "drawable",
+                    context.getPackageName()
+            );
+
+            if (resourceId != 0) {
+                imageView.setImageResource(resourceId);
+                return;
+            }
+        }
+    }
+
+    private void addCandidate(List<String> candidates, String name) {
+        if (name != null && !candidates.contains(name)) {
+            candidates.add(name);
         }
     }
 
